@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router'
 import { CapabilityTag } from '../components/CapabilityTag'
 import { EntrypointButton } from '../components/EntrypointButton'
 import { EntrypointList } from '../components/EntrypointList'
+import { SourcePolicyBlock } from '../components/SourcePolicyBlock'
 import { StatusBadge } from '../components/StatusBadge'
 import { projects } from '../data/projects'
 import { getDetailEntrypoints } from '../lib/detail-entrypoints'
@@ -95,6 +96,8 @@ export function ProjectDetailRoute() {
             <TextList items={detailSummary} />
           </section>
         ) : null}
+
+        <SourcePolicyBlock project={project} />
       </article>
     </main>
   )

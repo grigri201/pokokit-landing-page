@@ -1,8 +1,10 @@
 import type {
+  DataFreshness,
   EntrypointAvailability,
   EntrypointKind,
   ProjectStatus,
   ProjectType,
+  SourceDisplaySource,
 } from './project-schema'
 
 type LabelDefinition = {
@@ -67,4 +69,30 @@ export const entrypointAvailabilityLabels: Record<EntrypointAvailability, string
   disabled: '不可用',
   'local-only': '本地开发',
   tbd: '待确认',
+}
+
+export const dataFreshnessLabels: Record<DataFreshness, LabelDefinition> = {
+  manual: {
+    label: '人工维护',
+    description: '由 Landing Page manifest 手动维护，不是实时或自动同步数据。',
+  },
+  'build-time': {
+    label: '构建期生成',
+    description: '由构建流程生成，需重新构建后更新。',
+  },
+  'project-manifest': {
+    label: '项目 Manifest',
+    description: '来自项目显式提供的公开 manifest。',
+  },
+  unknown: {
+    label: '未知',
+    description: '尚未记录明确的数据新鲜度。',
+  },
+}
+
+export const sourceDisplaySourceLabels: Record<SourceDisplaySource, string> = {
+  'landing-manifest': 'Landing Page Project Manifest',
+  'planning-artifacts': '规划产物',
+  'public-project-manifest': '公开 Project Manifest',
+  'manual-summary': '人工摘要',
 }

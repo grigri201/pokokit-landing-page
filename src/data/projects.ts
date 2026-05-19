@@ -51,6 +51,7 @@ export const projectManifest = {
         doesNotRead: [
           'raw Pokopia image source directories',
           'full item manifest',
+          'docs/pokopia_image_sources/**',
           'dist/docs/pokopia_image_sources/**',
           'build-only diagnostics',
         ],

@@ -29,6 +29,13 @@ describe('ProjectDetailRoute', () => {
     expect(screen.getByText('装饰推荐')).toBeInTheDocument()
     expect(screen.getByText(/展示 Pokemon 主色、色板和偏好词/)).toBeInTheDocument()
     expect(screen.getByText(/可分享的静态详情页/)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: '来源和边界' })).toBeInTheDocument()
+    expect(screen.getByText('人工维护')).toBeInTheDocument()
+    expect(screen.getByText(/不是实时或自动同步数据/)).toBeInTheDocument()
+    expect(screen.getByText('docs/pokopia_image_sources/**')).toBeInTheDocument()
+    expect(screen.getByText('dist/docs/pokopia_image_sources/**')).toBeInTheDocument()
+    expect(screen.getByText('full item manifest')).toBeInTheDocument()
+    expect(screen.getByText(/Decor Dex 当前公开入口按 PRD 假设配置/)).toBeInTheDocument()
     expect(
       screen.getByRole('link', { name: /打开 Decor Dex 工具/ }),
     ).toHaveAttribute('href', 'https://pokopia-decor-dex.tinytoolshelf.com')
@@ -48,6 +55,12 @@ describe('ProjectDetailRoute', () => {
     expect(screen.getAllByText(/素材实例/).length).toBeGreaterThan(0)
     expect(screen.getAllByText(/技能标记/).length).toBeGreaterThan(0)
     expect(screen.getAllByText(/预览和保存恢复/).length).toBeGreaterThan(0)
+    expect(screen.getByText('SceneDocument save payloads')).toBeInTheDocument()
+    expect(screen.getByText('localStorage UI preferences')).toBeInTheDocument()
+    expect(screen.getByText('export files')).toBeInTheDocument()
+    expect(screen.getByText('editor build artifacts')).toBeInTheDocument()
+    expect(screen.getByText('future internal datasets')).toBeInTheDocument()
+    expect(screen.getByText(/公开部署 URL 未确认前/)).toBeInTheDocument()
 
     const entrypoints = screen.getByLabelText('Project entrypoints')
     expect(within(entrypoints).getByText('公开工具入口待确认')).toBeInTheDocument()
