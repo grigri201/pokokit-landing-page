@@ -56,10 +56,10 @@ development_status:
   2-4-提供未知项目路由和详情页恢复路径: done
   epic-2-retrospective: optional
 
-  epic-3: in-progress
+  epic-3: done
   3-1-验证新增第三个-project-card-的扩展路径: done
   3-2-固化独立构建和数据边界验证: done
   3-3-定义状态含义和内容治理文案: done
   3-4-完成响应式和可访问性发布硬化: done
-  3-5-记录静态部署-fallback-和发布验证入口: backlog
+  3-5-记录静态部署-fallback-和发布验证入口: done
   epic-3-retrospective: optional
