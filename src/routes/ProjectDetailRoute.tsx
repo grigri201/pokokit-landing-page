@@ -2,11 +2,13 @@ import { Link, useParams } from 'react-router'
 import { CapabilityTag } from '../components/CapabilityTag'
 import { EntrypointButton } from '../components/EntrypointButton'
 import { EntrypointList } from '../components/EntrypointList'
+import { RelatedProjectLinks } from '../components/RelatedProjectLinks'
 import { SourcePolicyBlock } from '../components/SourcePolicyBlock'
 import { StatusBadge } from '../components/StatusBadge'
 import { projects } from '../data/projects'
 import { getDetailEntrypoints } from '../lib/detail-entrypoints'
 import { findProjectById } from '../lib/project-routes'
+import { resolveRelatedProjects } from '../lib/related-projects'
 
 function TextList({ items }: { items: string[] }) {
   return (
@@ -39,6 +41,7 @@ export function ProjectDetailRoute() {
 
   const { entrypoints, primaryEntrypoint } = getDetailEntrypoints(project)
   const detailSummary = project.detailSummary ?? []
+  const relatedProjects = resolveRelatedProjects(project, projects)
 
   return (
     <main className="app-shell detail-page">
@@ -96,6 +99,8 @@ export function ProjectDetailRoute() {
             <TextList items={detailSummary} />
           </section>
         ) : null}
+
+        <RelatedProjectLinks relatedProjects={relatedProjects} />
 
         <SourcePolicyBlock project={project} />
       </article>

@@ -55,6 +55,13 @@ describe('ProjectDetailRoute', () => {
     expect(screen.getAllByText(/素材实例/).length).toBeGreaterThan(0)
     expect(screen.getAllByText(/技能标记/).length).toBeGreaterThan(0)
     expect(screen.getAllByText(/预览和保存恢复/).length).toBeGreaterThan(0)
+    expect(screen.getByRole('heading', { name: '语义关联和参考关系' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('link', {
+        name: /Pokopia Decor Dex.*独立工具边界/,
+      }),
+    ).toHaveAttribute('href', '/projects/pokopia-decor-dex')
+    expect(screen.getByText(/不代表运行时合并/)).toBeInTheDocument()
     expect(screen.getByText('SceneDocument save payloads')).toBeInTheDocument()
     expect(screen.getByText('localStorage UI preferences')).toBeInTheDocument()
     expect(screen.getByText('export files')).toBeInTheDocument()

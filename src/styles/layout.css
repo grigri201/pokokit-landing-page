@@ -463,6 +463,48 @@
   padding: 2px 6px;
 }
 
+.related-projects {
+  border-top: 1px solid var(--color-border);
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+}
+
+.related-projects h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.related-projects p {
+  color: var(--color-muted);
+  margin: 0;
+  max-width: 780px;
+}
+
+.related-projects ul {
+  display: grid;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.related-projects a {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  color: var(--color-text);
+  display: block;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+  padding: var(--space-4);
+  text-decoration: none;
+}
+
+.related-projects a:hover {
+  background: var(--color-surface-strong);
+}
+
 @media (max-width: 767px) {
   .app-shell {
     padding: var(--space-5) var(--space-4);
