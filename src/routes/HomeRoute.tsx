@@ -14,6 +14,8 @@ type HomeRouteProps = {
 type LanguageMode = 'zh' | 'en'
 
 type HomeCopy = {
+  authorLabel: string
+  authorName: string
   emptyDescription: string
   emptyTitle: string
   githubLabel: string
@@ -30,6 +32,8 @@ type ProjectCopy = {
 
 const homeCopy: Record<LanguageMode, (themeMode: 'light' | 'dark') => HomeCopy> = {
   zh: (themeMode) => ({
+    authorLabel: '@',
+    authorName: '赛博许愿机',
     emptyDescription: '当前 manifest 中没有可展示的 Pokopia 工具。',
     emptyTitle: '暂无项目',
     githubLabel: '打开 GitHub: grigri201',
@@ -39,6 +43,8 @@ const homeCopy: Record<LanguageMode, (themeMode: 'light' | 'dark') => HomeCopy> 
     themeLabel: themeMode === 'light' ? '切换到深色模式' : '切换到浅色模式',
   }),
   en: (themeMode) => ({
+    authorLabel: '@',
+    authorName: 'Cyber Wishing Machine',
     emptyDescription: 'The current manifest has no Pokopia tools to show.',
     emptyTitle: 'No projects yet',
     githubLabel: 'Open GitHub: grigri201',
@@ -165,6 +171,11 @@ export function HomeRoute({
           </section>
         </div>
       </main>
+
+      <footer className="site-footer" aria-label={copy.authorLabel}>
+        <span>{copy.authorLabel}</span>
+        <strong>{copy.authorName}</strong>
+      </footer>
     </>
   )
 }

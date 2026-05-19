@@ -22,6 +22,9 @@ describe('HomeRoute', () => {
       'rel',
       'noopener noreferrer',
     )
+    expect(screen.getByRole('contentinfo', { name: '@' })).toHaveTextContent(
+      '@赛博许愿机',
+    )
     expect(screen.queryByRole('group', { name: 'Project filters' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: '全部项目' })).not.toBeInTheDocument()
     expect(screen.queryByText(/统一账号|统一后端|云同步|数据合并/)).not.toBeInTheDocument()
@@ -131,6 +134,9 @@ describe('HomeRoute', () => {
     expect(screen.getByRole('link', { name: 'Open GitHub: grigri201' })).toHaveAttribute(
       'href',
       'https://github.com/grigri201',
+    )
+    expect(screen.getByRole('contentinfo', { name: '@' })).toHaveTextContent(
+      '@Cyber Wishing Machine',
     )
 
     const decorCard = screen.getByRole('article', { name: 'Pokopia Decor Dex' })

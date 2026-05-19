@@ -163,8 +163,8 @@
 }
 
 .app-shell {
-  min-height: 100vh;
-  padding: var(--space-6) var(--space-5) 72px;
+  min-height: calc(100vh - 152px);
+  padding: var(--space-6) var(--space-5);
   width: 100%;
 }
 
@@ -227,6 +227,31 @@
 
 .project-grid > li {
   min-width: 0;
+}
+
+.site-footer {
+  align-items: center;
+  color: var(--color-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: center;
+  min-height: 84px;
+  padding: var(--space-5);
+  width: 100%;
+}
+
+.site-footer span {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.site-footer strong {
+  color: var(--color-text);
+  font-size: 0.95rem;
+  font-weight: 900;
 }
 
 .project-card-link {
