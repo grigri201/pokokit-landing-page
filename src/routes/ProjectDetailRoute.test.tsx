@@ -39,7 +39,7 @@ describe('ProjectDetailRoute', () => {
     expect(screen.getByText('docs/pokopia_image_sources/**')).toBeInTheDocument()
     expect(screen.getByText('dist/docs/pokopia_image_sources/**')).toBeInTheDocument()
     expect(screen.getByText('full item manifest')).toBeInTheDocument()
-    expect(screen.getByText(/Decor Dex 当前公开入口按 PRD 假设配置/)).toBeInTheDocument()
+    expect(screen.getByText(/Decor Dex 当前公开入口为发布前待复核配置/)).toBeInTheDocument()
     expect(
       screen.getByRole('link', { name: /打开 Decor Dex 工具/ }),
     ).toHaveAttribute('href', 'https://pokopia-decor-dex.tinytoolshelf.com')

@@ -62,7 +62,7 @@ export const projectManifest = {
         '展示 Pokemon 主色、色板和偏好词。',
         '提供装饰推荐和可分享的静态详情页。',
       ],
-      maintainerNotes: ['Decor Dex 当前公开入口按 PRD 假设配置，可在部署前复核。'],
+      maintainerNotes: ['Decor Dex 当前公开入口为发布前待复核配置。'],
     },
     {
       id: 'pokopia-scene-editor',

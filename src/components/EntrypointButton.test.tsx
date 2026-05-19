@@ -38,4 +38,24 @@ describe('EntrypointButton', () => {
     expect(screen.getAllByText('外部链接')).toHaveLength(2)
     expect(screen.queryByText('外部工具')).not.toBeInTheDocument()
   })
+
+  it('renders unavailable entrypoint reasons next to the entrypoint label', () => {
+    renderEntrypoint({
+      id: 'scene-tool-tbd',
+      kind: 'tool',
+      availability: 'tbd',
+      label: '公开工具入口待确认',
+      note: 'Scene Editor 仍在开发中，尚未确认公开部署 URL。',
+    })
+
+    const note = screen.getByRole('note')
+
+    expect(note).toHaveTextContent('公开工具入口待确认')
+    expect(note).toHaveTextContent('待确认')
+    expect(note).toHaveTextContent('工具入口')
+    expect(note).toHaveTextContent('Scene Editor 仍在开发中，尚未确认公开部署 URL。')
+    expect(
+      screen.queryByRole('link', { name: /公开工具入口待确认/ }),
+    ).not.toBeInTheDocument()
+  })
 })
