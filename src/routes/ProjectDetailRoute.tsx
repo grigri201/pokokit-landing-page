@@ -6,6 +6,7 @@ import { RelatedProjectLinks } from '../components/RelatedProjectLinks'
 import { SourcePolicyBlock } from '../components/SourcePolicyBlock'
 import { StatusBadge } from '../components/StatusBadge'
 import { projects } from '../data/projects'
+import type { ProjectCard } from '../domain/project-schema'
 import { getDetailEntrypoints } from '../lib/detail-entrypoints'
 import { findProjectById, getProjectPath } from '../lib/project-routes'
 import { resolveRelatedProjects } from '../lib/related-projects'
@@ -20,9 +21,13 @@ function TextList({ items }: { items: string[] }) {
   )
 }
 
-export function ProjectDetailRoute() {
+type ProjectDetailRouteProps = {
+  projectList?: ProjectCard[]
+}
+
+export function ProjectDetailRoute({ projectList = projects }: ProjectDetailRouteProps) {
   const { projectId } = useParams()
-  const project = findProjectById(projects, projectId)
+  const project = findProjectById(projectList, projectId)
 
   if (!project) {
     return (
@@ -41,7 +46,7 @@ export function ProjectDetailRoute() {
           <section aria-labelledby="valid-projects-title">
             <h2 id="valid-projects-title">有效项目</h2>
             <ul>
-              {projects.map((validProject) => (
+              {projectList.map((validProject) => (
                 <li key={validProject.id}>
                   <Link to={getProjectPath(validProject.id)}>
                     {validProject.name} 项目详情
@@ -57,7 +62,7 @@ export function ProjectDetailRoute() {
 
   const { entrypoints, primaryEntrypoint } = getDetailEntrypoints(project)
   const detailSummary = project.detailSummary ?? []
-  const relatedProjects = resolveRelatedProjects(project, projects)
+  const relatedProjects = resolveRelatedProjects(project, projectList)
 
   return (
     <main className="app-shell detail-page">

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { projectManifest } from '../data/projects'
+import { extendedProjectManifest } from '../test/project-fixtures'
 import { validateProjectManifest } from './project-validation'
 
 describe('Project Manifest v1 validation', () => {
@@ -9,6 +10,14 @@ describe('Project Manifest v1 validation', () => {
     expect(manifest.projects.map((project) => project.id)).toEqual([
       'pokopia-decor-dex',
       'pokopia-scene-editor',
+    ])
+  })
+
+  it('accepts a legal third project record without schema changes', () => {
+    expect(extendedProjectManifest.projects.map((project) => project.id)).toEqual([
+      'pokopia-decor-dex',
+      'pokopia-scene-editor',
+      'pokopia-map-planner',
     ])
   })
 

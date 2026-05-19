@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { projectManifest, projects } from '../data/projects'
+import { extendedProjects } from '../test/project-fixtures'
 import { validateProjectManifest } from '../domain/project-validation'
 import { resolveRelatedProjects } from './related-projects'
 
@@ -36,6 +37,19 @@ describe('related project helpers', () => {
 
     expect(() => validateProjectManifest(invalidManifest)).toThrowError(
       /\[pokopia-scene-editor\] projects\.1\.relatedProjects\.0\.projectId: unknown related project id "missing-project"/,
+    )
+  })
+
+  it('resolves a third project target from another project relationship', () => {
+    const sceneEditor = extendedProjects.find(
+      (project) => project.id === 'pokopia-scene-editor',
+    )
+
+    expect(sceneEditor).toBeDefined()
+    const relatedProjects = resolveRelatedProjects(sceneEditor!, extendedProjects)
+
+    expect(relatedProjects.map((relatedProject) => relatedProject.targetProject.id)).toContain(
+      'pokopia-map-planner',
     )
   })
 })

@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { projects } from '../data/projects'
+import { extendedProjects } from '../test/project-fixtures'
+import { getCapabilityFilterOptions, getStatusFilterOptions } from './filter-options'
 import {
   filterProjects,
   parseFilters,
@@ -58,5 +60,23 @@ describe('project filters', () => {
     const searchParams = new URLSearchParams('capability=missing')
 
     expect(parseFilters(searchParams, projects)).toEqual({})
+  })
+
+  it('derives filter options and results for a legal third project', () => {
+    expect(getStatusFilterOptions(extendedProjects)).toContainEqual({
+      status: 'experimental',
+      label: 'Experimental',
+    })
+    expect(getCapabilityFilterOptions(extendedProjects)).toContain('路线规划')
+    expect(
+      filterProjects(extendedProjects, { status: 'experimental' }).map(
+        (project) => project.id,
+      ),
+    ).toEqual(['pokopia-map-planner'])
+    expect(
+      filterProjects(extendedProjects, { capability: '路线规划' }).map(
+        (project) => project.id,
+      ),
+    ).toEqual(['pokopia-map-planner'])
   })
 })

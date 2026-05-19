@@ -3,7 +3,7 @@ import { EmptyState } from '../components/EmptyState'
 import { FilterToolbar } from '../components/FilterToolbar'
 import { ProjectCard } from '../components/ProjectCard'
 import { projects } from '../data/projects'
-import type { ProjectStatus } from '../domain/project-schema'
+import type { ProjectCard as ProjectCardData, ProjectStatus } from '../domain/project-schema'
 import {
   filterProjects,
   parseFilters,
@@ -12,12 +12,19 @@ import {
   toggleStatusFilter,
 } from '../lib/filters'
 
-export function HomeRoute() {
+type HomeRouteProps = {
+  projectList?: ProjectCardData[]
+}
+
+export function HomeRoute({ projectList = projects }: HomeRouteProps) {
   const [searchParams, setSearchParams] = useState(
     () => new URLSearchParams(window.location.search),
   )
-  const filters = useMemo(() => parseFilters(searchParams, projects), [searchParams])
-  const visibleProjects = filterProjects(projects, filters)
+  const filters = useMemo(
+    () => parseFilters(searchParams, projectList),
+    [projectList, searchParams],
+  )
+  const visibleProjects = filterProjects(projectList, filters)
 
   useEffect(() => {
     const syncFiltersFromUrl = () => {
@@ -50,7 +57,7 @@ export function HomeRoute() {
         </div>
 
         <FilterToolbar
-          projects={projects}
+          projects={projectList}
           filters={filters}
           onStatusToggle={(status: ProjectStatus) =>
             updateFilters(toggleStatusFilter(filters, status))

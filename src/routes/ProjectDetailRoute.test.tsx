@@ -3,13 +3,17 @@ import { MemoryRouter, Route, Routes } from 'react-router'
 import { describe, expect, it } from 'vitest'
 import type { ProjectCard } from '../domain/project-schema'
 import { getDetailEntrypoints } from '../lib/detail-entrypoints'
+import { extendedProjects } from '../test/project-fixtures'
 import { ProjectDetailRoute } from './ProjectDetailRoute'
 
-function renderDetail(path: string) {
+function renderDetail(path: string, projectList?: ProjectCard[]) {
   render(
     <MemoryRouter initialEntries={[path]}>
       <Routes>
-        <Route path="/projects/:projectId" element={<ProjectDetailRoute />} />
+        <Route
+          path="/projects/:projectId"
+          element={<ProjectDetailRoute projectList={projectList} />}
+        />
       </Routes>
     </MemoryRouter>,
   )
@@ -112,5 +116,26 @@ describe('ProjectDetailRoute', () => {
     expect(
       screen.getByRole('link', { name: 'Pokopia Scene Editor 项目详情' }),
     ).toHaveAttribute('href', '/projects/pokopia-scene-editor')
+  })
+
+  it('renders a legal third project detail route from injected manifest data', () => {
+    renderDetail('/projects/pokopia-map-planner', extendedProjects)
+
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Pokopia Map Planner' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Experimental')).toBeInTheDocument()
+    expect(screen.getByText('路线规划')).toBeInTheDocument()
+    expect(screen.getByText(/manifest-driven UI 扩展/)).toBeInTheDocument()
+  })
+
+  it('links to a legal third project from related project data', () => {
+    renderDetail('/projects/pokopia-scene-editor', extendedProjects)
+
+    expect(
+      screen.getByRole('link', {
+        name: /Pokopia Map Planner.*独立工具边界/,
+      }),
+    ).toHaveAttribute('href', '/projects/pokopia-map-planner')
   })
 })

@@ -1,5 +1,5 @@
 # generated: 2026-05-19T09:58:22+0800
-# last_updated: 2026-05-19T11:07:00+0800
+# last_updated: 2026-05-19T11:13:50+0800
 # project: landing-page
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-19T09:58:22+0800
-last_updated: 2026-05-19T11:07:00+0800
+last_updated: 2026-05-19T11:13:50+0800
 project: landing-page
 project_key: NOKEY
 tracking_system: file-system
@@ -56,8 +56,8 @@ development_status:
   2-4-提供未知项目路由和详情页恢复路径: done
   epic-2-retrospective: optional
 
-  epic-3: backlog
-  3-1-验证新增第三个-project-card-的扩展路径: backlog
+  epic-3: in-progress
+  3-1-验证新增第三个-project-card-的扩展路径: done
   3-2-固化独立构建和数据边界验证: backlog
   3-3-定义状态含义和内容治理文案: backlog
   3-4-完成响应式和可访问性发布硬化: backlog

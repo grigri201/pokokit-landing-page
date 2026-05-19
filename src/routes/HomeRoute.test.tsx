@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
+import { extendedProjects } from '../test/project-fixtures'
 import { HomeRoute } from './HomeRoute'
 
 describe('HomeRoute', () => {
@@ -127,5 +128,21 @@ describe('HomeRoute', () => {
     expect(window.location.search).toBe('')
     expect(screen.getByRole('article', { name: 'Pokopia Decor Dex' })).toBeInTheDocument()
     expect(screen.getByRole('article', { name: 'Pokopia Scene Editor' })).toBeInTheDocument()
+  })
+
+  it('renders and filters a legal third project from injected manifest data', () => {
+    render(<HomeRoute projectList={extendedProjects} />)
+
+    expect(screen.getByRole('article', { name: 'Pokopia Map Planner' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Experimental' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '路线规划' })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Experimental' }))
+
+    expect(screen.getByRole('article', { name: 'Pokopia Map Planner' })).toBeInTheDocument()
+    expect(screen.queryByRole('article', { name: 'Pokopia Decor Dex' })).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('article', { name: 'Pokopia Scene Editor' }),
+    ).not.toBeInTheDocument()
   })
 })
