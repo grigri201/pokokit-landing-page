@@ -3,6 +3,7 @@ import type { ProjectCard as ProjectCardData } from '../domain/project-schema'
 import { getPrimaryEntrypoint } from '../lib/entrypoints'
 import { CapabilityTag } from './CapabilityTag'
 import { EntrypointButton } from './EntrypointButton'
+import { EntrypointList } from './EntrypointList'
 import { StatusBadge } from './StatusBadge'
 
 type ProjectCardProps = {
@@ -41,6 +42,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
       <div className="project-card__actions">
         <EntrypointButton entrypoint={primaryEntrypoint} />
+        <EntrypointList
+          entrypoints={project.entrypoints}
+          primaryEntrypointId={primaryEntrypoint.id}
+        />
       </div>
     </article>
   )

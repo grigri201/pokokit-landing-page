@@ -42,14 +42,29 @@ describe('HomeRoute', () => {
     expect(
       within(decorCard).getByRole('link', { name: /打开 Decor Dex 工具/ }),
     ).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(within(decorCard).getByText('查看本地仓库')).toBeInTheDocument()
+    expect(within(decorCard).getByText('开发者本地路径，不是公开工具入口。')).toBeInTheDocument()
+    expect(
+      within(decorCard).queryByRole('link', { name: /查看本地仓库/ }),
+    ).not.toBeInTheDocument()
 
     const sceneCard = screen.getByRole('article', { name: 'Pokopia Scene Editor' })
     expect(within(sceneCard).getByText('In development')).toBeInTheDocument()
     expect(within(sceneCard).getByText('Editor')).toBeInTheDocument()
     expect(within(sceneCard).getByText('建筑层')).toBeInTheDocument()
     expect(
-      within(sceneCard).getByRole('link', { name: '查看项目详情' }),
+      within(sceneCard).getByRole('link', { name: /查看项目详情/ }),
     ).toHaveAttribute('href', '/projects/pokopia-scene-editor')
+    expect(within(sceneCard).getByText('公开工具入口待确认')).toBeInTheDocument()
+    expect(within(sceneCard).getByText('待确认')).toBeInTheDocument()
+    expect(within(sceneCard).getByText(/尚未确认公开部署 URL/)).toBeInTheDocument()
+    expect(
+      within(sceneCard).queryByRole('link', { name: /公开工具入口待确认/ }),
+    ).not.toBeInTheDocument()
+    expect(within(sceneCard).getByText('查看规划文档')).toBeInTheDocument()
+    expect(
+      within(sceneCard).queryByRole('link', { name: /查看规划文档/ }),
+    ).not.toBeInTheDocument()
   })
 
   it('filters by status and clears back to all projects', () => {

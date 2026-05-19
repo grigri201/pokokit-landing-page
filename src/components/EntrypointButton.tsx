@@ -1,11 +1,20 @@
+import {
+  entrypointAvailabilityLabels,
+  entrypointExternalTargetLabels,
+  entrypointKindLabels,
+} from '../domain/project-labels'
 import type { ProjectEntrypoint } from '../domain/project-schema'
 import { isExternalHref, isSafeAvailableHref } from '../lib/entrypoints'
 
 type EntrypointButtonProps = {
   entrypoint: ProjectEntrypoint
+  variant?: 'primary' | 'secondary'
 }
 
-export function EntrypointButton({ entrypoint }: EntrypointButtonProps) {
+export function EntrypointButton({
+  entrypoint,
+  variant = 'primary',
+}: EntrypointButtonProps) {
   if (
     entrypoint.availability !== 'available' ||
     !entrypoint.href ||
@@ -13,7 +22,11 @@ export function EntrypointButton({ entrypoint }: EntrypointButtonProps) {
   ) {
     return (
       <div className="entrypoint-note" role="note">
-        <strong>{entrypoint.label}</strong>
+        <strong>
+          <span>{entrypoint.label}</span>
+          <span>{entrypointAvailabilityLabels[entrypoint.availability]}</span>
+        </strong>
+        <small>{entrypointKindLabels[entrypoint.kind]}</small>
         {entrypoint.note ? <span>{entrypoint.note}</span> : null}
       </div>
     )
@@ -23,13 +36,18 @@ export function EntrypointButton({ entrypoint }: EntrypointButtonProps) {
 
   return (
     <a
-      className="entrypoint-button"
+      className={`entrypoint-button entrypoint-button--${variant}`}
       href={entrypoint.href}
       rel={external ? 'noopener noreferrer' : undefined}
       target={external ? '_blank' : undefined}
     >
-      {entrypoint.label}
-      {external ? <span className="entrypoint-target">外部工具</span> : null}
+      <span>{entrypoint.label}</span>
+      <small>{entrypointKindLabels[entrypoint.kind]}</small>
+      {external ? (
+        <span className="entrypoint-target">
+          {entrypointExternalTargetLabels[entrypoint.kind]}
+        </span>
+      ) : null}
     </a>
   )
 }

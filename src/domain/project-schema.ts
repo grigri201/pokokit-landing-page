@@ -52,6 +52,10 @@ const projectIdSchema = z
   .min(1)
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'must be stable kebab-case')
 
+function isAvailableEntrypointHref(href: string): boolean {
+  return (href.startsWith('/') && !href.startsWith('//')) || /^https:\/\//.test(href)
+}
+
 export const entrypointSchema = z
   .object({
     id: z.string().min(1),
@@ -71,7 +75,11 @@ export const entrypointSchema = z
       })
     }
 
-    if (entrypoint.availability === 'available' && entrypoint.href?.startsWith('../')) {
+    if (
+      entrypoint.availability === 'available' &&
+      entrypoint.href &&
+      !isAvailableEntrypointHref(entrypoint.href)
+    ) {
       context.addIssue({
         code: 'custom',
         path: ['href'],

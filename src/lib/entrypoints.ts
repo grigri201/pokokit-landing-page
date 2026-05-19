@@ -2,10 +2,12 @@ import type { ProjectCard, ProjectEntrypoint } from '../domain/project-schema'
 
 export function getPrimaryEntrypoint(project: ProjectCard): ProjectEntrypoint {
   const primaryEntrypoint = project.entrypoints.find(
-    (entrypoint) => entrypoint.isPrimary,
+    (entrypoint) => entrypoint.isPrimary && entrypoint.availability === 'available',
   )
 
-  return primaryEntrypoint ?? project.entrypoints[0]
+  return primaryEntrypoint ?? project.entrypoints.find(
+    (entrypoint) => entrypoint.isPrimary,
+  ) ?? project.entrypoints[0]
 }
 
 export function isExternalHref(href: string): boolean {
@@ -13,5 +15,5 @@ export function isExternalHref(href: string): boolean {
 }
 
 export function isSafeAvailableHref(href: string): boolean {
-  return href.startsWith('/') || /^https:\/\//.test(href)
+  return (href.startsWith('/') && !href.startsWith('//')) || /^https:\/\//.test(href)
 }

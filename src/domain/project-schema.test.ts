@@ -166,6 +166,27 @@ describe('Project Manifest v1 validation', () => {
     )
   })
 
+  it('rejects protocol-relative available entrypoint URLs', () => {
+    const invalidManifest = {
+      ...projectManifest,
+      projects: [
+        {
+          ...projectManifest.projects[0],
+          entrypoints: [
+            {
+              ...projectManifest.projects[0].entrypoints[0],
+              href: '//example.com/tool',
+            },
+          ],
+        },
+      ],
+    }
+
+    expect(() => validateProjectManifest(invalidManifest)).toThrowError(
+      /\[pokopia-decor-dex\] projects\.0\.entrypoints\.0\.href: available entrypoints must use a public URL or same-site path/,
+    )
+  })
+
   it('requires local-only entrypoints to explain why they are local', () => {
     const invalidManifest = {
       ...projectManifest,

@@ -198,6 +198,17 @@
   text-decoration: none;
 }
 
+.entrypoint-button--secondary {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.entrypoint-button small {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
 .entrypoint-target {
   color: rgb(255 255 255 / 82%);
   font-size: 0.78rem;
@@ -214,7 +225,31 @@
 }
 
 .entrypoint-note strong {
+  align-items: center;
   color: var(--color-text);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.entrypoint-note strong span:last-child {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  padding: 2px 6px;
+}
+
+.entrypoint-note small {
+  color: var(--color-muted);
+}
+
+.entrypoint-list {
+  display: grid;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .empty-state {

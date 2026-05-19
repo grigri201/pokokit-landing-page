@@ -1,4 +1,9 @@
-import type { ProjectStatus, ProjectType } from './project-schema'
+import type {
+  EntrypointAvailability,
+  EntrypointKind,
+  ProjectStatus,
+  ProjectType,
+} from './project-schema'
 
 type LabelDefinition = {
   label: string
@@ -39,4 +44,27 @@ export const projectTypeLabels: Record<ProjectType, string> = {
   data: 'Data',
   utility: 'Utility',
   showcase: 'Showcase',
+}
+
+export const entrypointKindLabels: Record<EntrypointKind, string> = {
+  tool: '工具入口',
+  detail: '项目详情',
+  repo: '仓库',
+  docs: '规划文档',
+  external: '外部链接',
+}
+
+export const entrypointExternalTargetLabels: Record<EntrypointKind, string> = {
+  tool: '外部工具',
+  detail: '外部详情',
+  repo: '外部仓库',
+  docs: '外部文档',
+  external: '外部链接',
+}
+
+export const entrypointAvailabilityLabels: Record<EntrypointAvailability, string> = {
+  available: '可用',
+  disabled: '不可用',
+  'local-only': '本地开发',
+  tbd: '待确认',
 }
