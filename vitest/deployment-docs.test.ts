@@ -7,27 +7,23 @@ const repoRoot = cwd()
 const deploymentDocPath = path.join(repoRoot, 'docs', 'deployment-static-fallback.md')
 
 describe('deployment fallback documentation', () => {
-  it('documents direct detail-route fallback and release validation entrypoints', async () => {
+  it('documents the static root-only deployment boundary', async () => {
     const doc = await readFile(deploymentDocPath, 'utf8')
 
     expect(doc).toMatch(/dist\//)
-    expect(doc).toMatch(/fallback 到 `index\.html`/)
-    expect(doc).toMatch(/\/projects\/:projectId/)
-    expect(doc).toMatch(/直接打开或刷新/)
-    expect(doc).toMatch(/host-specific fallback/)
-    expect(doc).toMatch(/部署配置|rewrite|host 配置/)
+    expect(doc).toMatch(/只发布根路径/)
+    expect(doc).toMatch(/公开有效路径只有 `\/`/)
+    expect(doc).toMatch(/不维护 `\/projects\/\*`/)
+    expect(doc).toMatch(/归一化回 `\/`/)
     expect(doc).toMatch(/\/assets\/\*/)
+    expect(doc).toMatch(/\/pokemon-portraits\/\*/)
     expect(doc).toMatch(/带扩展名/)
-    expect(doc).toMatch(/dist\/index\.html/)
-    expect(doc).toMatch(/不要默认把产品路由改成 hash URL/)
     expect(doc).toMatch(/pnpm build/)
     expect(doc).toMatch(/pnpm smoke/)
     expect(doc).toMatch(/应用级 smoke/)
-    expect(doc).toMatch(/不能替代最终 host/)
     expect(doc).toMatch(/Home Page/)
-    expect(doc).toMatch(/Project Detail route/)
-    expect(doc).toMatch(/unknown project route/)
-    expect(doc).toMatch(/filter empty state/)
+    expect(doc).toMatch(/非根路径会回到 `\/`/)
+    expect(doc).toMatch(/legacy filter query/)
     expect(doc).toMatch(/mobile layout/)
     expect(doc).toMatch(/不需要相邻的 `pokopia-color-pattern`/)
     expect(doc).toMatch(/不读取相邻 Pokopia 项目仓库/)
@@ -35,6 +31,20 @@ describe('deployment fallback documentation', () => {
     expect(doc).not.toMatch(
       /(?:cp|rsync|scp)\s+\.\.\/pokopia-|dist\/docs\/pokopia_image_sources|SceneDocument|localStorage UI preferences/,
     )
+    expect(doc).not.toMatch(/\/#\/projects/)
+    expect(doc).not.toMatch(/Project Detail route/)
+    expect(doc).not.toMatch(/host-specific fallback/)
+    expect(doc).not.toMatch(/rewrite 到 `index\.html`/)
+  })
+
+  it('keeps App root-only without React Router project routes', async () => {
+    const appSource = await readFile(path.join(repoRoot, 'src', 'App.tsx'), 'utf8')
+
+    expect(appSource).toMatch(/redirectUnsupportedPathToRoot/)
+    expect(appSource).not.toMatch(/ProjectDetailRoute/)
+    expect(appSource).not.toMatch(/BrowserRouter/)
+    expect(appSource).not.toMatch(/HashRouter/)
+    expect(appSource).not.toMatch(/Route\s+path/)
   })
 
   it('keeps build and smoke scripts available for release validation', async () => {
@@ -59,11 +69,10 @@ describe('deployment fallback documentation', () => {
     )
 
     expect(smokeSpec).toMatch(/renders the manifest-backed landing baseline/)
-    expect(smokeSpec).toMatch(/renders a manifest-backed project detail route/)
-    expect(smokeSpec).toMatch(/renders unknown project recovery paths/)
-    expect(smokeSpec).toMatch(/renders wildcard route recovery paths/)
-    expect(smokeSpec).toMatch(/filter empty state/)
-    expect(smokeSpec).toMatch(/mobile detail route/)
+    expect(smokeSpec).toMatch(/redirects unsupported paths back to root/)
+    expect(smokeSpec).toMatch(/legacy filter query/)
     expect(smokeSpec).toMatch(/width: 390/)
+    expect(smokeSpec).not.toMatch(/project detail route/)
+    expect(smokeSpec).not.toMatch(/wildcard route recovery/)
   })
 })

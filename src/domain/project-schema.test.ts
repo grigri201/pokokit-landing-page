@@ -35,11 +35,11 @@ describe('Project Manifest v1 validation', () => {
           capabilities: ['Validation'],
           entrypoints: [
             {
-              id: 'broken-detail',
-              kind: 'detail',
+              id: 'broken-tool',
+              kind: 'tool',
               availability: 'available',
-              label: '查看详情',
-              href: '/projects/broken-project',
+              label: '打开工具',
+              href: '/',
             },
           ],
           sourcePolicy: {
@@ -112,7 +112,7 @@ describe('Project Manifest v1 validation', () => {
     )
   })
 
-  it('requires exactly one available primary entrypoint per project', () => {
+  it('requires exactly one primary entrypoint per project', () => {
     const invalidManifest = {
       ...projectManifest,
       projects: [
@@ -131,15 +131,15 @@ describe('Project Manifest v1 validation', () => {
     )
   })
 
-  it('rejects unavailable primary entrypoints', () => {
+  it('rejects unavailable primary entrypoints for available projects', () => {
     const invalidManifest = {
       ...projectManifest,
       projects: [
         {
-          ...projectManifest.projects[1],
+          ...projectManifest.projects[0],
           entrypoints: [
             {
-              ...projectManifest.projects[1].entrypoints[0],
+              ...projectManifest.projects[0].entrypoints[0],
               availability: 'tbd',
               href: undefined,
               note: 'Public deployment is not confirmed.',
@@ -150,7 +150,7 @@ describe('Project Manifest v1 validation', () => {
     }
 
     expect(() => validateProjectManifest(invalidManifest)).toThrowError(
-      /\[pokopia-scene-editor\] projects\.0\.entrypoints: primary entrypoint must be available/,
+      /\[pokopia-decor-dex\] projects\.0\.entrypoints: available projects must use an available primary entrypoint/,
     )
   })
 
@@ -204,7 +204,7 @@ describe('Project Manifest v1 validation', () => {
           ...projectManifest.projects[0],
           entrypoints: [
             {
-              ...projectManifest.projects[0].entrypoints[2],
+              ...projectManifest.projects[0].entrypoints[1],
               note: undefined,
               isPrimary: true,
             },
@@ -226,9 +226,8 @@ describe('Project Manifest v1 validation', () => {
           ...projectManifest.projects[1],
           entrypoints: [
             {
-              ...projectManifest.projects[1].entrypoints[1],
-              href: '/projects/pokopia-scene-editor',
-              isPrimary: true,
+              ...projectManifest.projects[1].entrypoints[0],
+              href: '/',
             },
           ],
         },

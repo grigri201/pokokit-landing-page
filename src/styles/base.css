@@ -2,8 +2,8 @@
   color: var(--color-text);
   background: var(--color-bg);
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+    ui-rounded, "SF Pro Rounded", Nunito, Inter, ui-sans-serif, system-ui,
+    -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
   line-height: 1.5;
   text-rendering: optimizeLegibility;
@@ -36,19 +36,22 @@ p {
 }
 
 h1 {
-  font-size: 2.4rem;
+  font-size: 2.8rem;
+  font-weight: 850;
   line-height: 1.1;
   margin-bottom: var(--space-3);
 }
 
 h2 {
-  font-size: 1.35rem;
+  font-size: 1.55rem;
+  font-weight: 800;
   line-height: 1.25;
   margin-bottom: var(--space-4);
 }
 
 h3 {
   font-size: 1.15rem;
+  font-weight: 800;
   line-height: 1.25;
   margin: 0;
 }

@@ -13,9 +13,9 @@ export const projectManifest = {
       primaryUseCases: [
         '查看 Pokemon 主色和色板',
         '寻找符合偏好词和色彩规则的装饰物品',
-        '分享或直接访问 Pokemon 详情页',
+        '进入公开 Decor Dex 工具查看装饰参考',
       ],
-      capabilities: ['Pokemon 色彩', '装饰推荐', '静态详情页', '可分享链接'],
+      capabilities: ['Pokemon 色彩', '装饰推荐', '可分享链接'],
       entrypoints: [
         {
           id: 'decor-dex-public-tool',
@@ -25,13 +25,6 @@ export const projectManifest = {
           href: 'https://pokopia-decor-dex.tinytoolshelf.com',
           note: '外部公开工具入口，将打开 Pokopia Decor Dex。',
           isPrimary: true,
-        },
-        {
-          id: 'decor-dex-detail',
-          kind: 'detail',
-          availability: 'available',
-          label: '查看项目详情',
-          href: '/projects/pokopia-decor-dex',
         },
         {
           id: 'decor-dex-local-repo',
@@ -58,10 +51,6 @@ export const projectManifest = {
       },
       dataFreshness: 'manual',
       problem: '帮助创作者基于 Pokemon 色彩、色板和偏好词找到装饰搭配参考。',
-      detailSummary: [
-        '展示 Pokemon 主色、色板和偏好词。',
-        '提供装饰推荐和可分享的静态详情页。',
-      ],
       maintainerNotes: ['Decor Dex 当前公开入口为发布前待复核配置。'],
     },
     {
@@ -69,7 +58,7 @@ export const projectManifest = {
       name: 'Pokopia Scene Editor',
       type: 'editor',
       status: 'in-development',
-      tagline: '用 7x7 工作台制作、预览、保存和恢复 5x5 Pokopia 布景。',
+      tagline: '用 7*7 工作台记录和分享你的Pokopia布景',
       audiences: ['Pokopia 创作者', 'Pokopia 工具维护者'],
       primaryUseCases: [
         '规划 5x5 主体区和外围装饰区',
@@ -80,19 +69,12 @@ export const projectManifest = {
       capabilities: ['7x7 画布', '建筑层', '素材摆放', '技能标记', '保存恢复'],
       entrypoints: [
         {
-          id: 'scene-editor-detail',
-          kind: 'detail',
-          availability: 'available',
-          label: '查看项目详情',
-          href: '/projects/pokopia-scene-editor',
-          isPrimary: true,
-        },
-        {
           id: 'scene-editor-public-tool',
           kind: 'tool',
           availability: 'tbd',
           label: '公开工具入口待确认',
           note: 'Scene Editor 仍在开发中，尚未确认公开部署 URL。',
+          isPrimary: true,
         },
         {
           id: 'scene-editor-local-repo',
@@ -127,10 +109,6 @@ export const projectManifest = {
       },
       dataFreshness: 'manual',
       problem: '帮助创作者规划 Pokopia 布景、建筑层、素材实例和预览保存路径。',
-      detailSummary: [
-        '围绕 7x7 工作台和 5x5 主体区组织素材。',
-        '表达建筑层、素材实例、技能标记、预览和保存恢复。',
-      ],
       relatedProjects: [
         {
           projectId: 'pokopia-decor-dex',

@@ -12,42 +12,97 @@ const longUnbrokenText =
   'PokopiaSceneEditorResponsiveReleaseHardeningLongUnbrokenProjectNameAndEntrypointLabel'
 
 test('renders the manifest-backed landing baseline', async ({ page }) => {
+  await setLightTheme(page)
   await page.goto('/')
 
-  await expect(
-    page.getByRole('heading', { name: 'Pokopia 工具目录' }),
-  ).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'pokokit' })).toBeVisible()
+  await expect(page.getByRole('button', { name: '切换到深色模式' })).toBeVisible()
+  await expect(page.getByRole('button', { name: '切换到英文' })).toHaveText('EN')
+  await expect(page.getByRole('link', { name: '打开 GitHub: grigri201' })).toHaveAttribute(
+    'href',
+    'https://github.com/grigri201',
+  )
+  await expect(page.getByRole('group', { name: 'Project filters' })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: '全部项目' })).toHaveCount(0)
   await expect(page.getByText('Pokopia Decor Dex')).toBeVisible()
   await expect(page.getByText('Pokopia Scene Editor')).toBeVisible()
 })
 
-test('renders a manifest-backed project detail route', async ({ page }) => {
-  await page.goto('/projects/pokopia-scene-editor')
+test('theme toggle switches the page between light and dark modes', async ({
+  page,
+}) => {
+  await setLightTheme(page)
+  await page.goto('/')
 
-  await expect(
-    page.getByRole('heading', { name: 'Pokopia Scene Editor' }),
-  ).toBeVisible()
-  await expect(
-    page.getByText('用 7x7 工作台制作、预览、保存和恢复 5x5 Pokopia 布景。'),
-  ).toBeVisible()
-  await expect(page.getByRole('link', { name: '返回工具目录' })).toBeVisible()
+  await page.getByRole('button', { name: '切换到深色模式' }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await expect(page.getByRole('button', { name: '切换到浅色模式' })).toBeVisible()
+
+  await page.getByRole('button', { name: '切换到浅色模式' }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
 })
 
-test('renders unknown project recovery paths', async ({ page }) => {
-  await page.goto('/projects/not-a-project')
+test('language toggle switches home copy between Chinese and English', async ({
+  page,
+}) => {
+  await setLightTheme(page)
+  await page.goto('/')
 
-  await expect(page.getByRole('heading', { name: '找不到项目' })).toBeVisible()
-  await expect(page.getByRole('link', { name: '返回工具目录' })).toBeVisible()
+  await page.getByRole('button', { name: '切换到英文' }).click()
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+  await expect(page.getByRole('button', { name: 'Switch to dark mode' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Switch to Chinese' })).toHaveText('中')
+  await expect(page.getByRole('link', { name: 'Open GitHub: grigri201' })).toBeVisible()
   await expect(
-    page.getByRole('link', { name: 'Pokopia Decor Dex 项目详情' }),
+    page.getByText('A Pokopia dex for Pokemon colors, preference terms, and decor pairings.'),
   ).toBeVisible()
+  await expect(page.getByRole('link', { name: /Open Decor Dex Tool/ })).toBeVisible()
+  await page.getByRole('article', { name: 'Pokopia Scene Editor' }).hover()
+  await expect(page.getByText('Still debugging. Please wait a little longer.')).toBeVisible()
+
+  await page.getByRole('button', { name: 'Switch to Chinese' }).click()
+  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
+  await expect(page.getByRole('button', { name: '切换到深色模式' })).toBeVisible()
+  await expect(page.getByText('Pokemon 色彩、偏好词和装饰搭配的 Pokopia 图鉴。')).toBeVisible()
 })
 
-test('renders wildcard route recovery paths', async ({ page }) => {
-  await page.goto('/not-a-real-route')
+test.describe('browser locale language detection', () => {
+  test.use({ locale: 'en-US' })
 
-  await expect(page.getByRole('heading', { name: '找不到项目' })).toBeVisible()
-  await expect(page.getByRole('link', { name: '返回工具目录' })).toBeVisible()
+  test('initializes English copy for non-Chinese browser locales', async ({
+    page,
+  }) => {
+    await setLightTheme(page)
+    await page.goto('/')
+
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+    await expect(page.getByRole('button', { name: 'Switch to Chinese' })).toHaveText('中')
+    await expect(
+      page.getByText(
+        'A Pokopia dex for Pokemon colors, preference terms, and decor pairings.',
+      ),
+    ).toBeVisible()
+
+    await page.getByRole('button', { name: 'Switch to Chinese' }).click()
+    await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
+    await expect(page.getByRole('button', { name: '切换到英文' })).toHaveText('EN')
+  })
+})
+
+test('redirects unsupported paths back to root', async ({ page }) => {
+  for (const unsupportedPath of [
+    '/projects/pokopia-decor-dex',
+    '/projects/pokopia-scene-editor',
+    '/projects/not-a-project',
+    '/unexpected-path',
+    '/#/projects/pokopia-decor-dex',
+  ]) {
+    await page.goto(unsupportedPath)
+    await expect(page).toHaveURL(/\/$/)
+    await expect(page.getByRole('heading', { name: 'pokokit' })).toBeVisible()
+    await expect(page.getByText('Pokopia Decor Dex')).toBeVisible()
+    await expect(page.getByRole('heading', { name: '找不到项目' })).toHaveCount(0)
+  }
 })
 
 for (const viewport of responsiveViewports) {
@@ -55,10 +110,10 @@ for (const viewport of responsiveViewports) {
     page,
   }) => {
     await page.setViewportSize(viewport)
+    await setLightTheme(page)
     await page.goto('/')
 
     await expectHomeCoreContent(page)
-    await expectFilterToolbarBeforeCards(page)
     await expectNoHorizontalOverflow(page)
     await expectNoVisibleBlockOverlap(page)
 
@@ -71,170 +126,52 @@ for (const viewport of responsiveViewports) {
   })
 }
 
-for (const viewport of responsiveViewports) {
-  test(`detail layout remains readable without horizontal overflow at ${viewport.name}`, async ({
-    page,
-  }) => {
-    await page.setViewportSize(viewport)
-    await page.goto('/projects/pokopia-scene-editor')
-
-    await expectDetailCoreContent(page)
-    await expectNoHorizontalOverflow(page)
-    await expectNoVisibleBlockOverlap(page)
-
-    if (viewport.width < 768) {
-      await expectMinimumTapTargetSizes(page)
-    }
-  })
-}
-
-test('mobile detail route keeps long project copy and entrypoints readable', async ({
+test('keyboard users can reach theme and project actions without filters', async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto('/projects/pokopia-scene-editor')
-
-  await expect(
-    page.getByRole('heading', { name: 'Pokopia Scene Editor' }),
-  ).toBeVisible()
-  await expect(page.getByText('In development')).toBeVisible()
-  await expect(
-    page.getByLabel('Project capabilities').getByText('建筑层', { exact: true }),
-  ).toBeVisible()
-  await expect(page.getByText('公开工具入口待确认')).toBeVisible()
-  await expect(page.getByText(/尚未确认公开部署 URL/)).toBeVisible()
-  await expect(page.getByText('查看规划文档')).toBeVisible()
-  await expect(page.getByRole('link', { name: /Pokopia Decor Dex/ })).toBeVisible()
-
-  await injectLongDetailTextStress(page)
-  await expectNoHorizontalOverflow(page)
-  await expectNoVisibleBlockOverlap(page)
-  await expectMinimumTapTargetSizes(page)
-})
-
-test('keyboard users can traverse filters and activate filter buttons', async ({
-  page,
-}) => {
+  await setLightTheme(page)
   await page.goto('/')
 
-  await expectNextTabFocus(page, /Available/)
-  await page.keyboard.press('Enter')
-  await expect(page).toHaveURL(/\?status=available/)
-  await expect(page.getByText('Pokopia Decor Dex')).toBeVisible()
-  await expect(page.getByText('Pokopia Scene Editor')).toHaveCount(0)
-
-  await page.goto('/')
-  await expectNextTabFocus(page, /Available/)
-  await expectNextTabFocus(page, /In development/)
-  await page.keyboard.press('Space')
-  await expect(page).toHaveURL(/\?status=in-development/)
-  await expect(page.getByText('Pokopia Scene Editor')).toBeVisible()
-
-  await page.goto('/')
-  await expectNextTabFocus(page, /Available/)
-  await expectNextTabFocus(page, /In development/)
-  await expectNextTabFocus(page, /Pokemon 色彩/)
-  await expectNextTabFocus(page, /装饰推荐/)
-  await expectNextTabFocus(page, /静态详情页/)
-  await expectNextTabFocus(page, /可分享链接/)
-  await expectNextTabFocus(page, /7x7 画布/)
-  await expectNextTabFocus(page, /建筑层/)
-  await expectNextTabFocus(page, /素材摆放/)
-  await expectNextTabFocus(page, /技能标记/)
-  await expectNextTabFocus(page, /保存恢复/)
+  await expectNextTabFocus(page, /切换到深色模式/)
+  await expectNextTabFocus(page, /EN/)
+  await expectNextTabFocus(page, /打开 GitHub: grigri201/)
   await expectNextTabFocus(page, /打开 Decor Dex 工具/)
-  await expectNextTabFocus(page, /查看项目详情/)
 })
 
-test('keyboard users can reach detail, related, and recovery links by tabbing', async ({
-  page,
-}) => {
-  await page.goto('/projects/pokopia-decor-dex')
-  await expectNextTabFocus(page, /返回工具目录/)
-  await expectNextTabFocus(page, /打开 Decor Dex 工具/)
-
-  await page.goto('/projects/pokopia-scene-editor')
-  await expectNextTabFocus(page, /返回工具目录/)
-  await expectNextTabFocus(page, /Pokopia Decor Dex/)
-
-  await page.goto('/projects/not-a-project')
-  await expectNextTabFocus(page, /返回工具目录/)
-  await expectNextTabFocus(page, /Pokopia Decor Dex 项目详情/)
-})
-
-test('filter empty state and not-found recovery expose readable next actions', async ({
+test('legacy filter query keeps the root page readable', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/?status=available&capability=建筑层')
 
-  await expect(page.getByRole('heading', { name: '没有匹配的项目' })).toBeVisible()
-  await expect(page.getByText(/当前状态和能力标签组合/)).toBeVisible()
-  await expect(page.getByRole('button', { name: '清除筛选' })).toBeVisible()
-  await expectNoHorizontalOverflow(page)
-  await expectNoVisibleBlockOverlap(page)
-  await expectMinimumTapTargetSizes(page)
-
-  await page.goto('/projects/not-a-project')
-  await expect(page.getByRole('heading', { name: '找不到项目' })).toBeVisible()
-  await expect(page.getByRole('link', { name: '返回工具目录' })).toBeVisible()
-  await expect(
-    page.getByRole('link', { name: 'Pokopia Scene Editor 项目详情' }),
-  ).toBeVisible()
+  await expect(page.getByText('Pokopia Decor Dex')).toBeVisible()
+  await expect(page.getByText('Pokopia Scene Editor')).toBeVisible()
+  await expect(page.getByRole('button', { name: '清除筛选' })).toHaveCount(0)
   await expectNoHorizontalOverflow(page)
   await expectNoVisibleBlockOverlap(page)
   await expectMinimumTapTargetSizes(page)
 })
 
 async function expectHomeCoreContent(page: Page) {
-  await expect(
-    page.getByRole('heading', { name: 'Pokopia 工具目录' }),
-  ).toBeVisible()
-  await expect(page.getByRole('group', { name: 'Project filters' })).toBeVisible()
-  await expect(page.getByRole('heading', { name: 'Project Cards' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'pokokit' })).toBeVisible()
+  await expect(page.getByRole('button', { name: '切换到英文' })).toBeVisible()
+  await expect(page.getByRole('group', { name: 'Project filters' })).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Projects' })).toHaveCount(0)
+  await expect(page.getByRole('list', { name: 'Projects' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Status Tracker' })).toHaveCount(0)
   await expect(page.getByText('Pokopia Decor Dex')).toBeVisible()
   await expect(page.getByText('Pokopia Scene Editor')).toBeVisible()
-  await expect(page.getByText('Available').first()).toBeVisible()
-  await expect(page.getByText('In development').first()).toBeVisible()
-  await expect(
-    page.getByLabel('Pokopia Decor Dex 能力标签').getByText('Pokemon 色彩', {
-      exact: true,
-    }),
-  ).toBeVisible()
-  await expect(
-    page.getByLabel('Pokopia Scene Editor 能力标签').getByText('建筑层', {
-      exact: true,
-    }),
-  ).toBeVisible()
+  await expect(page.getByText('Available')).toHaveCount(0)
+  await expect(page.getByText('WIP').first()).toBeVisible()
+  await expect(page.getByLabel('Pokopia Decor Dex 能力标签')).toHaveCount(0)
+  await expect(page.getByLabel('Pokopia Scene Editor 能力标签')).toHaveCount(0)
   await expect(page.getByRole('link', { name: /打开 Decor Dex 工具/ })).toBeVisible()
-  await expect(page.getByRole('link', { name: /查看项目详情/ }).first()).toBeVisible()
+  await page.getByRole('article', { name: 'Pokopia Scene Editor' }).hover()
+  await expect(page.getByText('正在调试中，还要等一会儿哦')).toBeVisible()
 }
 
-async function expectDetailCoreContent(page: Page) {
-  await expect(
-    page.getByRole('heading', { name: 'Pokopia Scene Editor' }),
-  ).toBeVisible()
-  await expect(page.getByText('In development')).toBeVisible()
-  await expect(
-    page.getByLabel('Project capabilities').getByText('建筑层', { exact: true }),
-  ).toBeVisible()
-  await expect(page.getByText('公开工具入口待确认')).toBeVisible()
-  await expect(page.getByText(/尚未确认公开部署 URL/)).toBeVisible()
-  await expect(page.getByText('查看规划文档')).toBeVisible()
-  await expect(page.getByRole('link', { name: /Pokopia Decor Dex/ })).toBeVisible()
-}
-
-async function expectFilterToolbarBeforeCards(page: Page) {
-  const toolbarBox = await page
-    .getByRole('group', { name: 'Project filters' })
-    .boundingBox()
-  const cardHeadingBox = await page
-    .getByRole('heading', { name: 'Project Cards' })
-    .boundingBox()
-
-  expect(toolbarBox).not.toBeNull()
-  expect(cardHeadingBox).not.toBeNull()
-  expect(cardHeadingBox!.y).toBeGreaterThan(toolbarBox!.y + toolbarBox!.height - 1)
+async function setLightTheme(page: Page) {
+  await page.emulateMedia({ colorScheme: 'light' })
 }
 
 async function expectNoHorizontalOverflow(page: Page) {
@@ -259,13 +196,6 @@ async function expectNoVisibleBlockOverlap(page: Page) {
       '.entrypoint-button',
       '.entrypoint-note',
       '.empty-state',
-      '.not-found-state__actions a',
-      '.not-found-state li a',
-      '.project-detail__header',
-      '.detail-section',
-      '.related-projects a',
-      '.source-policy__grid section',
-      '.source-policy__notes',
     ].join(',')
 
     const visibleElements = Array.from(
@@ -319,11 +249,8 @@ async function expectMinimumTapTargetSizes(page: Page) {
   const undersizedTargets = await page.evaluate(() => {
     const selector = [
       'button',
+      '.project-card-link',
       'a.entrypoint-button',
-      'a.back-link',
-      '.entrypoint-list a',
-      '.related-projects a',
-      '.not-found-state a',
     ].join(',')
 
     return Array.from(document.querySelectorAll<HTMLElement>(selector))
@@ -393,7 +320,11 @@ async function expectNextTabFocus(page: Page, text: RegExp) {
         return ''
       }
 
-      return activeElement.textContent?.replace(/\s+/g, ' ').trim() ?? ''
+      return (
+        activeElement.textContent?.replace(/\s+/g, ' ').trim() ||
+        activeElement.getAttribute('aria-label') ||
+        ''
+      )
     })
 
     if (text.test(activeText)) {
@@ -409,45 +340,14 @@ async function expectNextTabFocus(page: Page, text: RegExp) {
 async function injectLongHomeTextStress(page: Page) {
   await page.evaluate((text) => {
     const projectTitle = document.querySelector<HTMLElement>('#pokopia-scene-editor-title')
-    const capability = document
-      .querySelector('[aria-label="Pokopia Scene Editor 能力标签"]')
-      ?.querySelector<HTMLElement>('.capability-tag')
-    const entrypointLabel = document
-      .querySelector<HTMLElement>('[href="/projects/pokopia-scene-editor"] span')
+    const teaserLabel = document.querySelector<HTMLElement>('.project-card__teaser-bubble')
 
     if (projectTitle) {
       projectTitle.textContent = text
     }
 
-    if (capability) {
-      capability.textContent = text
-    }
-
-    if (entrypointLabel) {
-      entrypointLabel.textContent = text
-    }
-  }, longUnbrokenText)
-}
-
-async function injectLongDetailTextStress(page: Page) {
-  await page.evaluate((text) => {
-    const detailTitle = document.querySelector<HTMLElement>('#project-detail-title')
-    const capability = document
-      .querySelector('[aria-label="Project capabilities"]')
-      ?.querySelector<HTMLElement>('.capability-tag')
-    const entrypointNoteLabel = document
-      .querySelector<HTMLElement>('.entrypoint-note strong span:first-child')
-
-    if (detailTitle) {
-      detailTitle.textContent = text
-    }
-
-    if (capability) {
-      capability.textContent = text
-    }
-
-    if (entrypointNoteLabel) {
-      entrypointNoteLabel.textContent = text
+    if (teaserLabel) {
+      teaserLabel.textContent = text
     }
   }, longUnbrokenText)
 }

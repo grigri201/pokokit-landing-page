@@ -5,7 +5,7 @@ import { getPrimaryEntrypoint, isSafeAvailableHref } from './entrypoints'
 describe('entrypoint helpers', () => {
   it('rejects protocol-relative available hrefs', () => {
     expect(isSafeAvailableHref('//evil.example/path')).toBe(false)
-    expect(isSafeAvailableHref('/projects/pokopia-scene-editor')).toBe(true)
+    expect(isSafeAvailableHref('/')).toBe(true)
     expect(isSafeAvailableHref('https://example.com/tool')).toBe(true)
     expect(isSafeAvailableHref('http://example.com/tool')).toBe(false)
   })
@@ -23,11 +23,11 @@ describe('entrypoint helpers', () => {
           isPrimary: true,
         },
         {
-          id: 'detail',
-          kind: 'detail',
+          id: 'external-reference',
+          kind: 'external',
           availability: 'available',
-          label: '查看项目详情',
-          href: '/projects/example-project',
+          label: '查看相关项目',
+          href: 'https://example.com/project',
         },
       ],
     } as ProjectCard

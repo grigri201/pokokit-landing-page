@@ -50,7 +50,6 @@ export const projectTypeLabels: Record<ProjectType, string> = {
 
 export const entrypointKindLabels: Record<EntrypointKind, string> = {
   tool: '工具入口',
-  detail: '项目详情',
   repo: '仓库',
   docs: '规划文档',
   external: '外部链接',
@@ -58,7 +57,6 @@ export const entrypointKindLabels: Record<EntrypointKind, string> = {
 
 export const entrypointExternalTargetLabels: Record<EntrypointKind, string> = {
   tool: '外部工具',
-  detail: '外部详情',
   repo: '外部仓库',
   docs: '外部文档',
   external: '外部链接',

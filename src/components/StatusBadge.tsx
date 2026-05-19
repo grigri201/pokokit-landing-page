@@ -3,15 +3,24 @@ import type { ProjectStatus } from '../domain/project-schema'
 
 type StatusBadgeProps = {
   status: ProjectStatus
+  compact?: boolean
 }
 
-export function StatusBadge({ status }: StatusBadgeProps) {
+const compactStatusLabels: Partial<Record<ProjectStatus, string>> = {
+  'in-development': 'WIP',
+}
+
+export function StatusBadge({ status, compact = false }: StatusBadgeProps) {
   const statusCopy = projectStatusLabels[status]
+  const label = compact ? compactStatusLabels[status] ?? statusCopy.label : statusCopy.label
+  const className = compact
+    ? `status-badge status-badge--${status} status-badge--compact`
+    : `status-badge status-badge--${status}`
 
   return (
-    <span className={`status-badge status-badge--${status}`}>
-      <span>{statusCopy.label}</span>
-      <small>{statusCopy.description}</small>
+    <span className={className}>
+      <span>{label}</span>
+      {compact ? null : <small>{statusCopy.description}</small>}
     </span>
   )
 }

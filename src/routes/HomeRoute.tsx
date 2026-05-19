@@ -1,93 +1,170 @@
-import { useEffect, useMemo, useState } from 'react'
 import { EmptyState } from '../components/EmptyState'
-import { FilterToolbar } from '../components/FilterToolbar'
 import { ProjectCard } from '../components/ProjectCard'
 import { projects } from '../data/projects'
-import type { ProjectCard as ProjectCardData, ProjectStatus } from '../domain/project-schema'
-import {
-  filterProjects,
-  parseFilters,
-  toFilterSearchParams,
-  toggleCapabilityFilter,
-  toggleStatusFilter,
-} from '../lib/filters'
+import type { ProjectCard as ProjectCardData } from '../domain/project-schema'
 
 type HomeRouteProps = {
   projectList?: ProjectCardData[]
+  languageMode?: LanguageMode
+  themeMode?: 'light' | 'dark'
+  onLanguageToggle?: () => void
+  onThemeToggle?: () => void
 }
 
-export function HomeRoute({ projectList = projects }: HomeRouteProps) {
-  const [searchParams, setSearchParams] = useState(
-    () => new URLSearchParams(window.location.search),
-  )
-  const filters = useMemo(
-    () => parseFilters(searchParams, projectList),
-    [projectList, searchParams],
-  )
-  const visibleProjects = filterProjects(projectList, filters)
+type LanguageMode = 'zh' | 'en'
 
-  useEffect(() => {
-    const syncFiltersFromUrl = () => {
-      setSearchParams(new URLSearchParams(window.location.search))
-    }
+type HomeCopy = {
+  emptyDescription: string
+  emptyTitle: string
+  githubLabel: string
+  languageLabel: string
+  languageShortLabel: string
+  projectListLabel: string
+  themeLabel: string
+}
 
-    window.addEventListener('popstate', syncFiltersFromUrl)
-    return () => window.removeEventListener('popstate', syncFiltersFromUrl)
-  }, [])
+type ProjectCopy = {
+  entrypointLabels?: Record<string, string>
+  tagline?: string
+}
 
-  function updateFilters(nextFilters: typeof filters) {
-    const nextSearchParams = toFilterSearchParams(nextFilters)
-    const nextUrl = nextSearchParams.toString()
-      ? `${window.location.pathname}?${nextSearchParams.toString()}`
-      : window.location.pathname
+const homeCopy: Record<LanguageMode, (themeMode: 'light' | 'dark') => HomeCopy> = {
+  zh: (themeMode) => ({
+    emptyDescription: '当前 manifest 中没有可展示的 Pokopia 工具。',
+    emptyTitle: '暂无项目',
+    githubLabel: '打开 GitHub: grigri201',
+    languageLabel: '切换到英文',
+    languageShortLabel: 'EN',
+    projectListLabel: 'Projects',
+    themeLabel: themeMode === 'light' ? '切换到深色模式' : '切换到浅色模式',
+  }),
+  en: (themeMode) => ({
+    emptyDescription: 'The current manifest has no Pokopia tools to show.',
+    emptyTitle: 'No projects yet',
+    githubLabel: 'Open GitHub: grigri201',
+    languageLabel: 'Switch to Chinese',
+    languageShortLabel: '中',
+    projectListLabel: 'Projects',
+    themeLabel: themeMode === 'light' ? 'Switch to dark mode' : 'Switch to light mode',
+  }),
+}
 
-    window.history.pushState({}, '', nextUrl)
-    setSearchParams(nextSearchParams)
+const homeProjectCopy: Record<LanguageMode, Record<string, ProjectCopy>> = {
+  zh: {},
+  en: {
+    'pokopia-decor-dex': {
+      tagline: 'A Pokopia dex for Pokemon colors, preference terms, and decor pairings.',
+      entrypointLabels: {
+        'decor-dex-public-tool': 'Open Decor Dex Tool',
+      },
+    },
+    'pokopia-scene-editor': {
+      tagline: 'Record and share your Pokopia scenes on a 7*7 workspace.',
+      entrypointLabels: {
+        'scene-editor-public-tool': 'Public Tool Pending',
+        'scene-editor-local-repo': 'View Local Repository',
+        'scene-editor-planning-docs': 'View Planning Docs',
+      },
+    },
+  },
+}
+
+function localizeHomeProject(
+  project: ProjectCardData,
+  languageMode: LanguageMode,
+): ProjectCardData {
+  const copy = homeProjectCopy[languageMode][project.id]
+
+  if (!copy) {
+    return project
   }
 
+  return {
+    ...project,
+    tagline: copy.tagline ?? project.tagline,
+    entrypoints: project.entrypoints.map((entrypoint) => ({
+      ...entrypoint,
+      label: copy.entrypointLabels?.[entrypoint.id] ?? entrypoint.label,
+    })),
+  }
+}
+
+export function HomeRoute({
+  projectList = projects,
+  languageMode = 'zh',
+  themeMode = 'light',
+  onLanguageToggle,
+  onThemeToggle,
+}: HomeRouteProps) {
+  const copy = homeCopy[languageMode](themeMode)
+  const visibleProjects = projectList.map((project) =>
+    localizeHomeProject(project, languageMode),
+  )
+
   return (
-    <main className="app-shell">
-      <section className="trust-index" aria-labelledby="page-title">
-        <div className="trust-index__intro">
-          <p className="eyebrow">Pokopia Ecosystem</p>
-          <h1 id="page-title">Pokopia 工具目录</h1>
-          <p>
-            一个轻量的生态目录，用于判断当前有哪些 Pokopia 工具、是否可用、以及下一步应该进入哪里。
-          </p>
+    <>
+      <header className="top-banner">
+        <div className="top-banner__inner">
+          <h1 id="page-title">pokokit</h1>
+          <div className="top-banner__actions">
+            <button
+              className="theme-toggle"
+              type="button"
+              aria-label={copy.themeLabel}
+              title={copy.themeLabel}
+              aria-pressed={themeMode === 'dark'}
+              onClick={onThemeToggle}
+            >
+              <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+                <circle cx="9" cy="9" r="6.5" />
+                <path d="M9 2.5a6.5 6.5 0 0 1 0 13Z" />
+              </svg>
+            </button>
+            <button
+              className="language-toggle"
+              type="button"
+              aria-label={copy.languageLabel}
+              title={copy.languageLabel}
+              onClick={onLanguageToggle}
+            >
+              {copy.languageShortLabel}
+            </button>
+            <a
+              className="github-link"
+              href="https://github.com/grigri201"
+              rel="noopener noreferrer"
+              target="_blank"
+              aria-label={copy.githubLabel}
+              title="GitHub: grigri201"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 2C6.48 2 2 6.59 2 12.25c0 4.52 2.86 8.35 6.84 9.7.5.1.68-.22.68-.49 0-.24-.01-1.04-.01-1.9-2.78.62-3.37-1.22-3.37-1.22-.46-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.56 2.35 1.11 2.92.85.09-.67.35-1.11.63-1.37-2.22-.26-4.55-1.14-4.55-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.3 9.3 0 0 1 12 6.93c.85 0 1.7.12 2.5.34 1.9-1.33 2.74-1.05 2.74-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.49A10.2 10.2 0 0 0 22 12.25C22 6.59 17.52 2 12 2Z" />
+              </svg>
+            </a>
+          </div>
         </div>
+      </header>
 
-        <FilterToolbar
-          projects={projectList}
-          filters={filters}
-          onStatusToggle={(status: ProjectStatus) =>
-            updateFilters(toggleStatusFilter(filters, status))
-          }
-          onCapabilityToggle={(capability: string) =>
-            updateFilters(toggleCapabilityFilter(filters, capability))
-          }
-          onClear={() => updateFilters({})}
-        />
-      </section>
-
-      <section className="project-section" aria-labelledby="project-list-title">
-        <h2 id="project-list-title">Project Cards</h2>
-        {visibleProjects.length > 0 ? (
-          <ul className="project-grid" aria-labelledby="project-list-title">
-            {visibleProjects.map((project) => (
-              <li key={project.id}>
-                <ProjectCard project={project} />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <EmptyState
-            title="没有匹配的项目"
-            description="当前状态和能力标签组合没有对应的 Pokopia 工具。"
-            actionLabel="清除筛选"
-            onAction={() => updateFilters({})}
-          />
-        )}
-      </section>
-    </main>
+      <main className="app-shell">
+        <div className="home-content">
+          <section className="project-section">
+            {visibleProjects.length > 0 ? (
+              <ul className="project-grid" aria-label={copy.projectListLabel}>
+                {visibleProjects.map((project) => (
+                  <li key={project.id}>
+                    <ProjectCard languageMode={languageMode} project={project} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <EmptyState
+                title={copy.emptyTitle}
+                description={copy.emptyDescription}
+              />
+            )}
+          </section>
+        </div>
+      </main>
+    </>
   )
 }

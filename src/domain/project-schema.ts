@@ -20,7 +20,6 @@ export const PROJECT_TYPES = [
 
 export const ENTRYPOINT_KINDS = [
   'tool',
-  'detail',
   'repo',
   'docs',
   'external',
@@ -131,7 +130,6 @@ export const projectSchema = z.object({
   sourcePolicy: sourcePolicySchema,
   dataFreshness: z.enum(DATA_FRESHNESS_VALUES),
   problem: z.string().min(1).optional(),
-  detailSummary: z.array(z.string().min(1)).optional(),
   relatedProjects: z.array(relatedProjectSchema).optional(),
   maintainerNotes: z.array(z.string().min(1)).optional(),
 })

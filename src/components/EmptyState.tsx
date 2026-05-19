@@ -1,8 +1,8 @@
 type EmptyStateProps = {
   title: string
   description: string
-  actionLabel: string
-  onAction: () => void
+  actionLabel?: string
+  onAction?: () => void
 }
 
 export function EmptyState({
@@ -15,9 +15,11 @@ export function EmptyState({
     <div className="empty-state" role="status">
       <h3>{title}</h3>
       <p>{description}</p>
-      <button type="button" onClick={onAction}>
-        {actionLabel}
-      </button>
+      {actionLabel && onAction ? (
+        <button type="button" onClick={onAction}>
+          {actionLabel}
+        </button>
+      ) : null}
     </div>
   )
 }

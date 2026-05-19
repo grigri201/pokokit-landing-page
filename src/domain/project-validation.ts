@@ -52,12 +52,15 @@ function validateCrossRecordRules(manifest: ProjectManifest): string[] {
           'exactly one primary entrypoint is required',
         ),
       )
-    } else if (primaryEntrypoints[0]?.availability !== 'available') {
+    } else if (
+      project.status === 'available' &&
+      primaryEntrypoints[0]?.availability !== 'available'
+    ) {
       issues.push(
         formatIssue(
           project.id,
           `projects.${projectIndex}.entrypoints`,
-          'primary entrypoint must be available',
+          'available projects must use an available primary entrypoint',
         ),
       )
     }

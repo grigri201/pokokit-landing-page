@@ -17,11 +17,11 @@ export const thirdProject = {
   capabilities: ['路线规划', '地图标记', '实验性工具'],
   entrypoints: [
     {
-      id: 'map-planner-detail',
-      kind: 'detail',
+      id: 'map-planner-public-tool',
+      kind: 'tool',
       availability: 'available',
-      label: '查看项目详情',
-      href: '/projects/pokopia-map-planner',
+      label: '打开 Map Planner 工具',
+      href: 'https://example.com/pokopia-map-planner',
       isPrimary: true,
     },
     {
@@ -39,10 +39,6 @@ export const thirdProject = {
   },
   dataFreshness: 'manual',
   problem: '验证新增第三个 Pokopia 项目后目录、筛选、详情和关系链接自然扩展。',
-  detailSummary: [
-    '提供实验性的地图路线规划说明。',
-    '作为测试 fixture 验证 manifest-driven UI 扩展。',
-  ],
   maintainerNotes: ['测试 fixture，只用于扩展路径验证。'],
 } satisfies ProjectCard
 
