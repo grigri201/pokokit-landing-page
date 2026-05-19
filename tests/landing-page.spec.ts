@@ -9,3 +9,15 @@ test('renders the manifest-backed landing baseline', async ({ page }) => {
   await expect(page.getByText('Pokopia Decor Dex')).toBeVisible()
   await expect(page.getByText('Pokopia Scene Editor')).toBeVisible()
 })
+
+test('renders a manifest-backed project detail route', async ({ page }) => {
+  await page.goto('/projects/pokopia-scene-editor')
+
+  await expect(
+    page.getByRole('heading', { name: 'Pokopia Scene Editor' }),
+  ).toBeVisible()
+  await expect(
+    page.getByText('用 7x7 工作台制作、预览、保存和恢复 5x5 Pokopia 布景。'),
+  ).toBeVisible()
+  await expect(page.getByRole('link', { name: '返回工具目录' })).toBeVisible()
+})
