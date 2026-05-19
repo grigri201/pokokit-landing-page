@@ -7,7 +7,7 @@ import { SourcePolicyBlock } from '../components/SourcePolicyBlock'
 import { StatusBadge } from '../components/StatusBadge'
 import { projects } from '../data/projects'
 import { getDetailEntrypoints } from '../lib/detail-entrypoints'
-import { findProjectById } from '../lib/project-routes'
+import { findProjectById, getProjectPath } from '../lib/project-routes'
 import { resolveRelatedProjects } from '../lib/related-projects'
 
 function TextList({ items }: { items: string[] }) {
@@ -27,13 +27,29 @@ export function ProjectDetailRoute() {
   if (!project) {
     return (
       <main className="app-shell detail-page">
-        <Link className="back-link" to="/">
-          返回工具目录
-        </Link>
         <section className="not-found-state" aria-labelledby="project-not-found-title">
-          <p className="eyebrow">Project Detail</p>
+          <p className="eyebrow">Unknown Project</p>
           <h1 id="project-not-found-title">找不到项目</h1>
-          <p>当前项目链接没有匹配到 Landing Page 中维护的 Project Manifest 记录。</p>
+          <p>
+            当前链接没有匹配到 Landing Page 中维护的 Project Manifest 记录。可以返回工具目录，或直接进入一个有效项目详情页。
+          </p>
+          <div className="not-found-state__actions">
+            <Link className="entrypoint-button" to="/">
+              返回工具目录
+            </Link>
+          </div>
+          <section aria-labelledby="valid-projects-title">
+            <h2 id="valid-projects-title">有效项目</h2>
+            <ul>
+              {projects.map((validProject) => (
+                <li key={validProject.id}>
+                  <Link to={getProjectPath(validProject.id)}>
+                    {validProject.name} 项目详情
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
         </section>
       </main>
     )

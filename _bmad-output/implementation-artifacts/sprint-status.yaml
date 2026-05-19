@@ -1,5 +1,5 @@
 # generated: 2026-05-19T09:58:22+0800
-# last_updated: 2026-05-19T11:01:08+0800
+# last_updated: 2026-05-19T11:07:00+0800
 # project: landing-page
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-05-19T09:58:22+0800
-last_updated: 2026-05-19T11:01:08+0800
+last_updated: 2026-05-19T11:07:00+0800
 project: landing-page
 project_key: NOKEY
 tracking_system: file-system
@@ -49,11 +49,11 @@ development_status:
   1-4-渲染可信-entrypoint-和主-cta: done
   epic-1-retrospective: optional
 
-  epic-2: in-progress
+  epic-2: done
   2-1-渲染-manifest-驱动的-project-detail-page: done
   2-2-展示-source-policy-来源和数据新鲜度: done
   2-3-表达-related-projects-的语义关系: done
-  2-4-提供未知项目路由和详情页恢复路径: backlog
+  2-4-提供未知项目路由和详情页恢复路径: done
   epic-2-retrospective: optional
 
   epic-3: backlog

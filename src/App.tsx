@@ -8,6 +8,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomeRoute />} />
         <Route path="/projects/:projectId" element={<ProjectDetailRoute />} />
+        <Route path="*" element={<ProjectDetailRoute />} />
       </Routes>
     </BrowserRouter>
   )

@@ -99,4 +99,18 @@ describe('ProjectDetailRoute', () => {
     expect(entrypoints).toHaveLength(1)
     expect(primaryEntrypoint.id).toBe('self-detail')
   })
+
+  it('renders recovery paths for unknown project ids', () => {
+    renderDetail('/projects/not-a-project')
+
+    expect(screen.getByRole('heading', { level: 1, name: '找不到项目' })).toBeInTheDocument()
+    expect(screen.getByText(/没有匹配到 Landing Page 中维护的 Project Manifest/)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: '返回工具目录' })).toHaveAttribute('href', '/')
+    expect(
+      screen.getByRole('link', { name: 'Pokopia Decor Dex 项目详情' }),
+    ).toHaveAttribute('href', '/projects/pokopia-decor-dex')
+    expect(
+      screen.getByRole('link', { name: 'Pokopia Scene Editor 项目详情' }),
+    ).toHaveAttribute('href', '/projects/pokopia-scene-editor')
+  })
 })
