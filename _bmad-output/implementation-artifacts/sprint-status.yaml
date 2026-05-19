@@ -1,0 +1,65 @@
+# generated: 2026-05-19T09:58:22+0800
+# last_updated: 2026-05-19T10:16:00+0800
+# project: landing-page
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: /Users/grigri/side-project/pokopia/landing-page/_bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog -> in-progress: Automatically when first story is created (via create-story)
+#   - in-progress -> done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-05-19T09:58:22+0800
+last_updated: 2026-05-19T10:16:00+0800
+project: landing-page
+project_key: NOKEY
+tracking_system: file-system
+story_location: /Users/grigri/side-project/pokopia/landing-page/_bmad-output/implementation-artifacts
+
+development_status:
+  epic-1: in-progress
+  1-1-set-up-initial-project-from-starter-template: done
+  1-2-展示-compact-trust-index-首页和-project-card: backlog
+  1-3-支持状态和能力标签筛选: backlog
+  1-4-渲染可信-entrypoint-和主-cta: backlog
+  epic-1-retrospective: optional
+
+  epic-2: backlog
+  2-1-渲染-manifest-驱动的-project-detail-page: backlog
+  2-2-展示-source-policy-来源和数据新鲜度: backlog
+  2-3-表达-related-projects-的语义关系: backlog
+  2-4-提供未知项目路由和详情页恢复路径: backlog
+  epic-2-retrospective: optional
+
+  epic-3: backlog
+  3-1-验证新增第三个-project-card-的扩展路径: backlog
+  3-2-固化独立构建和数据边界验证: backlog
+  3-3-定义状态含义和内容治理文案: backlog
+  3-4-完成响应式和可访问性发布硬化: backlog
+  3-5-记录静态部署-fallback-和发布验证入口: backlog
+  epic-3-retrospective: optional

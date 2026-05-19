@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pokopia Landing Page - UX Design Directions</title>
+  <style>
+    :root {
+      --bg: #f7faf8;
+      --surface: #ffffff;
+      --surface-soft: #eef5f1;
+      --text: #17211c;
+      --muted: #66736d;
+      --border: #d9e1dd;
+      --primary: #2e7d5b;
+      --secondary: #2f6fed;
+      --warm: #d97845;
+      --soft: #8b6bd6;
+      --amber: #b98522;
+      --shadow: 0 14px 38px rgba(23, 33, 28, 0.08);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); }
+    a { color: inherit; text-decoration: none; }
+    .shell { max-width: 1180px; margin: 0 auto; padding: 28px 20px 56px; }
+    .intro { display: grid; gap: 10px; margin-bottom: 24px; }
+    .intro h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); line-height: 1.08; letter-spacing: 0; }
+    .intro p { margin: 0; max-width: 760px; color: var(--muted); line-height: 1.55; font-size: 15px; }
+    .nav { position: sticky; top: 0; z-index: 5; background: rgba(247, 250, 248, 0.94); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1180px; margin: 0 auto; padding: 10px 20px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .nav a { border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 13px; color: var(--muted); background: var(--surface); }
+    .direction { border: 1px solid var(--border); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow); margin: 0 0 28px; overflow: hidden; }
+    .direction-header { padding: 16px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+    .direction-header h2 { margin: 0 0 5px; font-size: 20px; }
+    .direction-header p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+    .badge { display: inline-flex; align-items: center; min-height: 24px; padding: 3px 8px; border-radius: 999px; font-size: 12px; border: 1px solid var(--border); white-space: nowrap; }
+    .badge.available { color: #17623f; background: #e8f5ee; border-color: #b9dec9; }
+    .badge.dev { color: #235bb8; background: #eaf1ff; border-color: #c6d8ff; }
+    .badge.planned { color: #7a5514; background: #fff3d8; border-color: #ead195; }
+    .badge.tbd { color: #5b6470; background: #f0f2f3; border-color: #d4d8dc; }
+    .mock { padding: 18px; min-height: 520px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .chip { border: 1px solid var(--border); background: var(--surface); border-radius: 8px; padding: 7px 10px; color: var(--muted); font-size: 13px; }
+    .chip.active { background: #e8f5ee; color: var(--primary); border-color: #b9dec9; }
+    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: 0 12px; border-radius: 8px; font-size: 14px; font-weight: 650; border: 1px solid var(--border); background: var(--surface); }
+    .button.primary { background: var(--primary); color: white; border-color: var(--primary); }
+    .button.secondary { color: var(--secondary); }
+    .button.disabled { color: #7d8580; background: #eff2f0; }
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .card { border: 1px solid var(--border); border-radius: 8px; background: var(--surface); padding: 16px; display: grid; gap: 12px; min-height: 230px; }
+    .card h3 { margin: 0; font-size: 19px; }
+    .card p { margin: 0; color: var(--muted); line-height: 1.45; font-size: 14px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 6px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+    .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .section-title { margin: 0 0 12px; font-size: 15px; color: var(--muted); }
+    .grid-hero { display: grid; gap: 18px; }
+    .grid-hero .top { display: grid; grid-template-columns: 0.9fr 1.3fr; gap: 18px; align-items: start; }
+    .statement { border: 1px solid var(--border); border-radius: 8px; padding: 18px; background: linear-gradient(180deg, #ffffff, #f2f8f4); min-height: 186px; }
+    .statement h3 { margin: 0 0 10px; font-size: 26px; line-height: 1.15; }
+    .statement p { margin: 0; color: var(--muted); line-height: 1.5; }
+    .split { display: grid; grid-template-columns: 280px 1fr; min-height: 520px; }
+    .side { border-right: 1px solid var(--border); background: #fbfdfc; padding: 16px; display: grid; align-content: start; gap: 14px; }
+    .list { display: grid; gap: 8px; }
+    .list-row { border: 1px solid var(--border); border-radius: 8px; padding: 11px; display: grid; gap: 6px; background: white; }
+    .list-row strong { font-size: 14px; }
+    .board { display: grid; grid-template-columns: 240px 1fr; gap: 16px; }
+    .tag-cloud { border: 1px solid var(--border); border-radius: 8px; padding: 14px; background: #fbfdfc; align-self: start; }
+    .tag-cloud .chip { width: 100%; margin-bottom: 8px; }
+    .detail-first { display: grid; grid-template-columns: 1fr 330px; gap: 16px; }
+    .detail-panel { border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: #fbfdfc; }
+    .detail-panel h3 { margin: 0 0 8px; }
+    .details-list { display: grid; gap: 10px; margin-top: 14px; }
+    .console { background: #101815; color: #e7f3ec; min-height: 520px; padding: 18px; display: grid; gap: 14px; }
+    .console .card, .console .detail-panel, .console .chip { background: #15221d; border-color: #2a3a33; color: #e7f3ec; }
+    .console p, .console .label, .console .section-title { color: #a8b8b0; }
+    .soft-map { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .path-card { border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: #fffaf5; display: grid; gap: 12px; }
+
+    @media (max-width: 760px) {
+      .direction-header { display: grid; }
+      .grid-hero .top, .split, .board, .detail-first, .soft-map { grid-template-columns: 1fr; }
+      .side { border-right: 0; border-bottom: 1px solid var(--border); }
+      .cards { grid-template-columns: 1fr; }
+      .mock { min-height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Design directions">
+    <div class="nav-inner">
+      <a href="#d1">1 Compact Trust Index</a>
+      <a href="#d2">2 Split Directory</a>
+      <a href="#d3">3 Tag Board</a>
+      <a href="#d4">4 Detail Led</a>
+      <a href="#d5">5 Maintainer Console</a>
+      <a href="#d6">6 Soft Map</a>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <section class="intro">
+      <h1>Pokopia Ecosystem Landing Page</h1>
+      <p>UX design direction showcase. Default recommendation: Direction 1, because it best supports quick comparison, honest status, and first-screen entry selection.</p>
+    </section>
+
+    <section id="d1" class="direction">
+      <div class="direction-header">
+        <div>
+          <h2>Direction 1: Compact Trust Index</h2>
+          <p>Recommended. Direct first-screen project comparison with status filters and clear entrypoints.</p>
+        </div>
+        <span class="badge available">Chosen default</span>
+      </div>
+      <div class="mock grid-hero">
+        <div class="top">
+          <div class="statement">
+            <h3>Pokopia tools, one clear entry point.</h3>
+            <p>Find the right project, understand its status, and open the trustworthy next step.</p>
+          </div>
+          <div>
+            <p class="section-title">Filter by status or capability</p>
+            <div class="toolbar">
+              <span class="chip active">All projects</span>
+              <span class="chip">Available</span>
+              <span class="chip">In development</span>
+              <span class="chip">Pokemon color</span>
+              <span class="chip">7x7 canvas</span>
+            </div>
+          </div>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <div class="meta"><span class="badge available">Available</span><span class="chip">Dex</span></div>
+            <h3>Pokopia Decor Dex</h3>
+            <p>Pokemon color palettes, preference terms, and decoration recommendations.</p>
+            <div class="meta"><span class="chip">Pokemon 色彩</span><span class="chip">装饰推荐</span><span class="chip">静态详情页</span></div>
+            <div class="actions"><span class="button primary">打开工具</span><span class="button secondary">查看详情</span></div>
+          </article>
+          <article class="card">
+            <div class="meta"><span class="badge dev">In development</span><span class="chip">Editor</span></div>
+            <h3>Pokopia Scene Editor</h3>
+            <p>Plan 5x5 scenes with a 7x7 workspace, building levels, item instances, and save/restore.</p>
+            <div class="meta"><span class="chip">7x7 画布</span><span class="chip">建筑层</span><span class="chip">保存恢复</span></div>
+            <div class="actions"><span class="button primary">查看详情</span><span class="button disabled">工具未部署</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="d2" class="direction">
+      <div class="direction-header">
+        <div>
+          <h2>Direction 2: Split Directory</h2>
+          <p>Persistent left navigation for filters, with project cards on the right.</p>
+        </div>
+        <span class="badge tbd">Alternative</span>
+      </div>
+      <div class="mock split">
+        <aside class="side">
+          <strong>Pokopia Ecosystem</strong>
+          <span class="chip active">All</span>
+          <span class="chip">Available</span>
+          <span class="chip">In development</span>
+          <span class="chip">Decor tools</span>
+          <span class="chip">Scene tools</span>
+        </aside>
+        <div class="cards" style="padding:16px;">
+          <article class="card"><span class="badge available">Available</span><h3>Decor Dex</h3><p>Best for finding Pokemon decoration matches.</p><div class="actions"><span class="button primary">打开工具</span></div></article>
+          <article class="card"><span class="badge dev">In development</span><h3>Scene Editor</h3><p>Best for planning 5x5 / 7x7 layouts.</p><div class="actions"><span class="button primary">查看详情</span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="d3" class="direction">
+      <div class="direction-header">
+        <div>
+          <h2>Direction 3: Tag Board</h2>
+          <p>Capability tags drive discovery first, then reveal matching projects.</p>
+        </div>
+        <span class="badge tbd">Alternative</span>
+      </div>
+      <div class="mock board">
+        <div class="tag-cloud">
+          <p class="section-title">Capabilities</p>
+          <span class="chip active">Pokemon 色彩</span>
+          <span class="chip">装饰推荐</span>
+          <span class="chip">7x7 画布</span>
+          <span class="chip">建筑层</span>
+          <span class="chip">保存恢复</span>
+        </div>
+        <div class="cards">
+          <article class="card"><span class="badge available">Available</span><h3>Decor Dex</h3><p>Matches selected capability: Pokemon 色彩.</p><div class="actions"><span class="button primary">打开工具</span></div></article>
+          <article class="card"><span class="badge dev">In development</span><h3>Scene Editor</h3><p>Related capability path: selectedPokemonKey semantics.</p><div class="actions"><span class="button secondary">查看关系</span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="d4" class="direction">
+      <div class="direction-header">
+        <div>
+          <h2>Direction 4: Detail Led</h2>
+          <p>Project details and source policy are prominent earlier in the hierarchy.</p>
+        </div>
+        <span class="badge tbd">Alternative</span>
+      </div>
+      <div class="mock detail-first">
+        <div class="detail-panel">
+          <span class="badge available">Available</span>
+          <h3>Pokopia Decor Dex</h3>
+          <p>Pokemon color and decoration directory. Runtime data remains inside the Decor Dex project.</p>
+          <div class="details-list">
+            <span class="chip">Display source: landing manifest</span>
+            <span class="chip">Does not read raw image sources</span>
+            <span class="chip">Related: Scene Editor key semantics</span>
+          </div>
+        </div>
+        <div class="cards">
+          <article class="card"><span class="badge dev">In development</span><h3>Scene Editor</h3><p>Detail page explains status, source policy, and unavailable tool entry.</p><div class="actions"><span class="button primary">查看详情</span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="d5" class="direction">
+      <div class="direction-header">
+        <div>
+          <h2>Direction 5: Maintainer Console</h2>
+          <p>Dark, provenance-heavy view optimized for maintainers and manifest auditing.</p>
+        </div>
+        <span class="badge tbd">Alternative</span>
+      </div>
+      <div class="mock console">
+        <p class="section-title">Project Manifest status</p>
+        <div class="cards">
+          <article class="card"><span class="badge available">valid</span><h3>pokopia-decor-dex</h3><p>2 entrypoints, 5 capabilities, manual freshness.</p><div class="actions"><span class="button secondary">audit source policy</span></div></article>
+          <article class="card"><span class="badge dev">valid</span><h3>pokopia-scene-editor</h3><p>public tool tbd, detail entry available, relation configured.</p><div class="actions"><span class="button secondary">review entrypoints</span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="d6" class="direction">
+      <div class="direction-header">
+        <div>
+          <h2>Direction 6: Soft Map</h2>
+          <p>A softer ecosystem map with project pathways. More expressive, less efficient.</p>
+        </div>
+        <span class="badge tbd">Alternative</span>
+      </div>
+      <div class="mock soft-map">
+        <article class="path-card">
+          <span class="badge available">Available</span>
+          <h3>Start with Decor Dex</h3>
+          <p>Find Pokemon color and decoration inspiration, then use key semantics in later tools.</p>
+          <span class="button primary">打开工具</span>
+        </article>
+        <article class="path-card">
+          <span class="badge dev">In development</span>
+          <h3>Continue to Scene Editor</h3>
+          <p>Plan a 5x5 scene in a 7x7 workspace when deployment is ready.</p>
+          <span class="button secondary">查看详情</span>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
