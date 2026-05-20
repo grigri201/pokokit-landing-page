@@ -56,7 +56,7 @@ describe('HomeRoute', () => {
     expect(decorCardLink).toContainElement(decorCard)
     expect(decorCardLink).toHaveAttribute(
       'href',
-      'https://pokopia-decor-dex.tinytoolshelf.com',
+      'https://decor-dex.pokokit.com',
     )
     expect(decorCardLink).toHaveAttribute('rel', 'noopener noreferrer')
     expect(within(decorCard).queryByText('查看 Pokemon 主色和色板')).not.toBeInTheDocument()
@@ -148,7 +148,7 @@ describe('HomeRoute', () => {
     expect(within(decorCard).queryByText(/Pokemon 色彩/)).not.toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Open Decor Dex Tool/ })).toHaveAttribute(
       'href',
-      'https://pokopia-decor-dex.tinytoolshelf.com',
+      'https://decor-dex.pokokit.com',
     )
 
     const sceneCard = screen.getByRole('article', { name: 'Pokopia Scene Editor' })

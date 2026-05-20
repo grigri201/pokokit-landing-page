@@ -22,7 +22,7 @@ export const projectManifest = {
           kind: 'tool',
           availability: 'available',
           label: '打开 Decor Dex 工具',
-          href: 'https://pokopia-decor-dex.tinytoolshelf.com',
+          href: 'https://decor-dex.pokokit.com',
           note: '外部公开工具入口，将打开 Pokopia Decor Dex。',
           isPrimary: true,
         },
@@ -51,7 +51,7 @@ export const projectManifest = {
       },
       dataFreshness: 'manual',
       problem: '帮助创作者基于 Pokemon 色彩、色板和偏好词找到装饰搭配参考。',
-      maintainerNotes: ['Decor Dex 当前公开入口为发布前待复核配置。'],
+      maintainerNotes: ['Decor Dex 当前公开入口由 landing-page manifest 人工维护。'],
     },
     {
       id: 'pokopia-scene-editor',
