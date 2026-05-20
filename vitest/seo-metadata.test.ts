@@ -4,7 +4,10 @@ import { cwd } from 'node:process'
 import { describe, expect, it } from 'vitest'
 
 const indexHtmlPath = path.join(cwd(), 'index.html')
+const robotsTxtPath = path.join(cwd(), 'public', 'robots.txt')
+const sitemapXmlPath = path.join(cwd(), 'public', 'sitemap.xml')
 const legacyDecorDexUrl = 'https://pokopia-decor-dex.tinytoolshelf.com'
+const siteOrigin = 'https://pokokit.com'
 
 async function loadIndexDocument(): Promise<{ html: string; document: Document }> {
   const html = await readFile(indexHtmlPath, 'utf8')
@@ -62,5 +65,37 @@ describe('SEO metadata', () => {
     expect(html).not.toContain(legacyDecorDexUrl)
     expect(document.querySelector('link[rel="canonical"]')).toBeNull()
     expect(metaPropertyContent(document, 'og:url')).toBeNull()
+  })
+
+  it('exposes crawler discovery files for the root landing page', async () => {
+    const robotsText = await readFile(robotsTxtPath, 'utf8')
+    const sitemapText = await readFile(sitemapXmlPath, 'utf8')
+    const sitemapDocument = new DOMParser().parseFromString(
+      sitemapText,
+      'application/xml',
+    )
+
+    expect(robotsText.trim().split(/\n+/)).toEqual([
+      'User-agent: *',
+      'Allow: /',
+      `Sitemap: ${siteOrigin}/sitemap.xml`,
+    ])
+    expect(
+      Array.from(sitemapDocument.querySelectorAll('loc')).map(
+        (element) => element.textContent,
+      ),
+    ).toEqual([`${siteOrigin}/`])
+    expect(
+      Array.from(sitemapDocument.querySelectorAll('changefreq')).map(
+        (element) => element.textContent,
+      ),
+    ).toEqual(['weekly'])
+    expect(
+      Array.from(sitemapDocument.querySelectorAll('priority')).map(
+        (element) => element.textContent,
+      ),
+    ).toEqual(['1.0'])
+    expect(sitemapText).not.toContain(legacyDecorDexUrl)
+    expect(sitemapText).not.toContain('decor-dex.pokokit.com')
   })
 })
