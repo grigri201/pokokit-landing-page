@@ -9,7 +9,7 @@ const redirectsPath = path.join(cwd(), 'public', '_redirects')
 const robotsTxtPath = path.join(cwd(), 'public', 'robots.txt')
 const sitemapXmlPath = path.join(cwd(), 'public', 'sitemap.xml')
 const legacyDecorDexUrl = 'https://pokopia-decor-dex.tinytoolshelf.com'
-const siteOrigin = 'https://pokokit.com'
+const siteOrigin = 'https://www.pokokit.com'
 const socialImageUrl = `${siteOrigin}/pokemon-portraits/ditto.png`
 
 async function loadIndexDocument(): Promise<{ html: string; document: Document }> {
@@ -46,10 +46,13 @@ function jsonLdGraph(document: Document): Record<string, unknown>[] {
 
 describe('SEO metadata', () => {
   it('describes pokokit as the Pokopia tool directory in static HTML', async () => {
-    const { document } = await loadIndexDocument()
+    const { html, document } = await loadIndexDocument()
 
     expect(document.documentElement.lang).toBe('en')
     expect(document.title).toBe('pokokit | Pokopia Tool Directory')
+    expect(html).toMatch(
+      /<meta name="description" content="[^"]*Pokopia tool directory[^"]*Decor Dex[^"]*" \/>/,
+    )
     expect(metaNameContent(document, 'description')).toContain(
       'Pokopia tool directory',
     )
@@ -85,7 +88,7 @@ describe('SEO metadata', () => {
     )
   })
 
-  it('sets a canonical URL for the public root only', async () => {
+  it('sets a canonical URL for the www public root only', async () => {
     const { document } = await loadIndexDocument()
 
     expect(
@@ -97,6 +100,7 @@ describe('SEO metadata', () => {
     const { html, document } = await loadIndexDocument()
 
     expect(html).not.toContain(legacyDecorDexUrl)
+    expect(html).not.toContain('https://pokokit.com/')
     expect(html).not.toContain('https://scene-editor.pokokit.com')
     expect(metaPropertyContent(document, 'og:url')).toBe(`${siteOrigin}/`)
   })
