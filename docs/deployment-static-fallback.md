@@ -10,6 +10,12 @@ Landing Page 是只发布根路径的 Vite 静态页面。部署时只发布 `di
 
 静态资源请求仍应按文件系统命中。缺失的 `/assets/*`、`/pokemon-portraits/*`、带扩展名的文件路径或其他站点资产不应被当成应用页面静默返回。
 
+## Host 配置
+
+`public/_headers` 随 Vite build 复制到 `dist/_headers`，用于给根 HTML、静态资源、`robots.txt` 和 `sitemap.xml` 配置缓存和基础安全 headers。
+
+`public/_redirects` 只维护明确的根页面归一化规则：`/index.html` 和 `/projects/*` 回到 `/`。不配置通配 SPA rewrite，例如 `/* /index.html 200` 或 `/* / 200`，否则缺失资源路径会被错误返回为首页。
+
 ## 发布前验证
 
 发布前至少运行：
