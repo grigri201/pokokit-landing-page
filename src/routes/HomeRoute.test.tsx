@@ -73,17 +73,26 @@ describe('HomeRoute', () => {
       within(sceneCard).getByText('用 7*7 工作台记录和分享你的Pokopia布景'),
     ).toBeInTheDocument()
     expect(sceneCard).not.toHaveAttribute('data-card-background')
-    expect(sceneCard).toHaveAttribute('data-card-teaser', 'true')
-    expect(within(sceneCard).getByText('WIP')).toBeInTheDocument()
+    expect(sceneCard).not.toHaveAttribute('data-card-teaser')
+    expect(within(sceneCard).queryByText('WIP')).not.toBeInTheDocument()
     expect(within(sceneCard).queryByText('In development')).not.toBeInTheDocument()
     expect(within(sceneCard).queryByText('Editor')).not.toBeInTheDocument()
     expect(within(sceneCard).queryByLabelText('Pokopia Scene Editor 能力标签')).not.toBeInTheDocument()
     expect(within(sceneCard).queryByText('建筑层')).not.toBeInTheDocument()
     expect(within(sceneCard).queryByText('+3')).not.toBeInTheDocument()
+    const sceneCardLink = screen.getByRole('link', { name: /打开 Scene Editor 工具/ })
+    expect(sceneCardLink).toContainElement(sceneCard)
+    expect(sceneCardLink).toHaveAttribute(
+      'href',
+      'https://scene-editor.pokokit.com',
+    )
+    expect(sceneCardLink).toHaveAttribute('rel', 'noopener noreferrer')
     expect(
-      within(sceneCard).getByLabelText('Pokopia Scene Editor 占位对话'),
-    ).toBeInTheDocument()
-    expect(within(sceneCard).getByText('正在调试中，还要等一会儿哦')).toBeInTheDocument()
+      within(sceneCard).queryByLabelText('Pokopia Scene Editor 占位对话'),
+    ).not.toBeInTheDocument()
+    expect(
+      within(sceneCard).queryByText('正在调试中，还要等一会儿哦'),
+    ).not.toBeInTheDocument()
     expect(within(sceneCard).queryByText('规划 5x5 主体区和外围装饰区')).not.toBeInTheDocument()
     expect(within(sceneCard).queryByText('公开工具入口待确认')).not.toBeInTheDocument()
     expect(within(sceneCard).queryByText('待确认')).not.toBeInTheDocument()
@@ -157,11 +166,15 @@ describe('HomeRoute', () => {
         'Record and share your Pokopia scenes on a 7*7 workspace.',
       ),
     ).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Open Scene Editor Tool/ })).toHaveAttribute(
+      'href',
+      'https://scene-editor.pokokit.com',
+    )
     expect(
-      within(sceneCard).getByLabelText('Pokopia Scene Editor placeholder dialogue'),
-    ).toBeInTheDocument()
+      within(sceneCard).queryByLabelText('Pokopia Scene Editor placeholder dialogue'),
+    ).not.toBeInTheDocument()
     expect(
-      within(sceneCard).getByText('Still debugging. Please wait a little longer.'),
-    ).toBeInTheDocument()
+      within(sceneCard).queryByText('Still debugging. Please wait a little longer.'),
+    ).not.toBeInTheDocument()
   })
 })

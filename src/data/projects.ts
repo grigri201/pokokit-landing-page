@@ -57,7 +57,7 @@ export const projectManifest = {
       id: 'pokopia-scene-editor',
       name: 'Pokopia Scene Editor',
       type: 'editor',
-      status: 'in-development',
+      status: 'available',
       tagline: '用 7*7 工作台记录和分享你的Pokopia布景',
       audiences: ['Pokopia 创作者', 'Pokopia 工具维护者'],
       primaryUseCases: [
@@ -71,9 +71,10 @@ export const projectManifest = {
         {
           id: 'scene-editor-public-tool',
           kind: 'tool',
-          availability: 'tbd',
-          label: '公开工具入口待确认',
-          note: 'Scene Editor 仍在开发中，尚未确认公开部署 URL。',
+          availability: 'available',
+          label: '打开 Scene Editor 工具',
+          href: 'https://scene-editor.pokokit.com',
+          note: '外部公开工具入口，将打开 Pokopia Scene Editor。',
           isPrimary: true,
         },
         {
@@ -115,7 +116,7 @@ export const projectManifest = {
           relationship: 'Pokemon key 语义和装饰参考关系，两个项目保持独立工具边界。',
         },
       ],
-      maintainerNotes: ['公开部署 URL 未确认前，不能把 Scene Editor 呈现为可启动工具。'],
+      maintainerNotes: ['Scene Editor 当前公开入口由 landing-page manifest 人工维护。'],
     },
   ],
 } as const

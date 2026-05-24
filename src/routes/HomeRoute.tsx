@@ -67,7 +67,7 @@ const homeProjectCopy: Record<LanguageMode, Record<string, ProjectCopy>> = {
     'pokopia-scene-editor': {
       tagline: 'Record and share your Pokopia scenes on a 7*7 workspace.',
       entrypointLabels: {
-        'scene-editor-public-tool': 'Public Tool Pending',
+        'scene-editor-public-tool': 'Open Scene Editor Tool',
         'scene-editor-local-repo': 'View Local Repository',
         'scene-editor-planning-docs': 'View Planning Docs',
       },
@@ -158,7 +158,7 @@ export function HomeRoute({
               <ul className="project-grid" aria-label={copy.projectListLabel}>
                 {visibleProjects.map((project) => (
                   <li key={project.id}>
-                    <ProjectCard languageMode={languageMode} project={project} />
+                    <ProjectCard project={project} />
                   </li>
                 ))}
               </ul>

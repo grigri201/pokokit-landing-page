@@ -63,8 +63,8 @@ test('language toggle switches home copy between Chinese and English', async ({
   await expect(page.getByRole('contentinfo', { name: '@' })).toContainText(
     'Cyber Wishing Machine',
   )
-  await page.getByRole('article', { name: 'Pokopia Scene Editor' }).hover()
-  await expect(page.getByText('Still debugging. Please wait a little longer.')).toBeVisible()
+  await expect(page.getByRole('link', { name: /Open Scene Editor Tool/ })).toBeVisible()
+  await expect(page.getByText('Still debugging. Please wait a little longer.')).toHaveCount(0)
 
   await page.getByRole('button', { name: 'Switch to Chinese' }).click()
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
@@ -169,12 +169,12 @@ async function expectHomeCoreContent(page: Page) {
   await expect(page.getByText('Pokopia Scene Editor')).toBeVisible()
   await expect(page.getByRole('contentinfo')).toBeVisible()
   await expect(page.getByText('Available')).toHaveCount(0)
-  await expect(page.getByText('WIP').first()).toBeVisible()
+  await expect(page.getByText('WIP')).toHaveCount(0)
   await expect(page.getByLabel('Pokopia Decor Dex 能力标签')).toHaveCount(0)
   await expect(page.getByLabel('Pokopia Scene Editor 能力标签')).toHaveCount(0)
   await expect(page.getByRole('link', { name: /打开 Decor Dex 工具/ })).toBeVisible()
-  await page.getByRole('article', { name: 'Pokopia Scene Editor' }).hover()
-  await expect(page.getByText('正在调试中，还要等一会儿哦')).toBeVisible()
+  await expect(page.getByRole('link', { name: /打开 Scene Editor 工具/ })).toBeVisible()
+  await expect(page.getByText('正在调试中，还要等一会儿哦')).toHaveCount(0)
 }
 
 async function setLightTheme(page: Page) {

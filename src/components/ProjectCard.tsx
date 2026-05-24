@@ -14,7 +14,6 @@ import { EntrypointButton } from './EntrypointButton'
 import { StatusBadge } from './StatusBadge'
 
 type ProjectCardProps = {
-  languageMode?: 'zh' | 'en'
   project: ProjectCardData
 }
 
@@ -46,12 +45,6 @@ const decorDexBackgrounds: readonly CardBackground[] = [
   },
 ]
 
-const sceneEditorProjectId = 'pokopia-scene-editor'
-const sceneEditorPlaceholderCopy = {
-  zh: '正在调试中，还要等一会儿哦',
-  en: 'Still debugging. Please wait a little longer.',
-} as const
-
 function getProjectCardBackground(projectId: string): CardBackground | undefined {
   if (projectId !== 'pokopia-decor-dex') {
     return undefined
@@ -60,18 +53,16 @@ function getProjectCardBackground(projectId: string): CardBackground | undefined
   return decorDexBackgrounds[Math.floor(Math.random() * decorDexBackgrounds.length)]
 }
 
-export function ProjectCard({ languageMode = 'zh', project }: ProjectCardProps) {
+export function ProjectCard({ project }: ProjectCardProps) {
   const headingId = `${project.id}-title`
   const primaryEntrypoint = getPrimaryEntrypoint(project)
   const background = useMemo(
     () => getProjectCardBackground(project.id),
     [project.id],
   )
-  const hasSceneEditorTeaser = project.id === sceneEditorProjectId
   const showStatusBadge = project.status !== 'available'
   const cardHref = primaryEntrypoint.href
   const canOpenCard =
-    !hasSceneEditorTeaser &&
     primaryEntrypoint.availability === 'available' &&
     cardHref !== undefined &&
     isSafeAvailableHref(cardHref)
@@ -85,7 +76,6 @@ export function ProjectCard({ languageMode = 'zh', project }: ProjectCardProps) 
       className="project-card"
       data-project-type={project.type}
       data-card-background={background ? 'true' : undefined}
-      data-card-teaser={hasSceneEditorTeaser ? 'true' : undefined}
       style={cardStyle}
       aria-labelledby={headingId}
     >
@@ -107,9 +97,7 @@ export function ProjectCard({ languageMode = 'zh', project }: ProjectCardProps) 
       <p className="project-card__tagline">{project.tagline}</p>
 
       <div className="project-card__footer">
-        {hasSceneEditorTeaser ? (
-          <SceneEditorTeaser languageMode={languageMode} />
-        ) : canOpenCard ? (
+        {canOpenCard ? (
           <ProjectCardCta external={external} entrypoint={primaryEntrypoint} />
         ) : (
           <EntrypointButton entrypoint={primaryEntrypoint} />
@@ -132,29 +120,6 @@ export function ProjectCard({ languageMode = 'zh', project }: ProjectCardProps) 
     >
       {card}
     </a>
-  )
-}
-
-function SceneEditorTeaser({ languageMode }: { languageMode: 'zh' | 'en' }) {
-  return (
-    <div
-      className="project-card__teaser"
-      aria-label={
-        languageMode === 'zh'
-          ? 'Pokopia Scene Editor 占位对话'
-          : 'Pokopia Scene Editor placeholder dialogue'
-      }
-    >
-      <img
-        className="project-card__teaser-avatar"
-        src="/pokemon-portraits/ditto.png"
-        alt=""
-        aria-hidden="true"
-      />
-      <p className="project-card__teaser-bubble">
-        {sceneEditorPlaceholderCopy[languageMode]}
-      </p>
-    </div>
   )
 }
 

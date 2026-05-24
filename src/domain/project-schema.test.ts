@@ -227,7 +227,9 @@ describe('Project Manifest v1 validation', () => {
           entrypoints: [
             {
               ...projectManifest.projects[1].entrypoints[0],
-              href: '/',
+              availability: 'tbd',
+              label: '公开工具入口待确认',
+              href: 'https://scene-editor.pokokit.com',
             },
           ],
         },

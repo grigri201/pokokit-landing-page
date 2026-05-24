@@ -14,7 +14,7 @@ describe('project filters', () => {
   it('filters by status', () => {
     expect(
       filterProjects(projects, { status: 'available' }).map((project) => project.id),
-    ).toEqual(['pokopia-decor-dex'])
+    ).toEqual(['pokopia-decor-dex', 'pokopia-scene-editor'])
   })
 
   it('filters by capability', () => {
@@ -32,8 +32,8 @@ describe('project filters', () => {
       filterProjects(projects, {
         status: 'available',
         capability: '建筑层',
-      }),
-    ).toEqual([])
+      }).map((project) => project.id),
+    ).toEqual(['pokopia-scene-editor'])
   })
 
   it('parses and serializes URL search params', () => {
