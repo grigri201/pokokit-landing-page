@@ -72,7 +72,17 @@ describe('HomeRoute', () => {
     expect(
       within(sceneCard).getByText('用 7*7 工作台记录和分享你的Pokopia布景'),
     ).toBeInTheDocument()
-    expect(sceneCard).not.toHaveAttribute('data-card-background')
+    expect(sceneCard).toHaveAttribute('data-card-background', 'true')
+    expect(sceneCard).toHaveAttribute('data-card-background-kind', 'scene-grid')
+    expect(sceneCard.style.getPropertyValue('--project-card-accent-color')).toBe(
+      '#65d0b8',
+    )
+    expect(sceneCard.querySelector('.project-card__scene-grid')).toBeInTheDocument()
+    expect(sceneCard.querySelectorAll('.project-card__scene-cell')).toHaveLength(49)
+    expect(
+      sceneCard.querySelectorAll('.project-card__scene-cell[data-scene-item]'),
+    ).toHaveLength(11)
+    expect(sceneCard.querySelector('.project-card__background')).not.toBeInTheDocument()
     expect(sceneCard).not.toHaveAttribute('data-card-teaser')
     expect(within(sceneCard).queryByText('WIP')).not.toBeInTheDocument()
     expect(within(sceneCard).queryByText('In development')).not.toBeInTheDocument()

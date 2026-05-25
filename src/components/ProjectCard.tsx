@@ -19,7 +19,8 @@ type ProjectCardProps = {
 
 type CardBackground = {
   accentColor: string
-  src: string
+  kind: 'image' | 'scene-grid'
+  src?: string
 }
 
 type ProjectCardStyle = CSSProperties & {
@@ -28,30 +29,55 @@ type ProjectCardStyle = CSSProperties & {
 
 const decorDexBackgrounds: readonly CardBackground[] = [
   {
+    kind: 'image',
     src: '/pokemon-portraits/bulbasaur.png',
     accentColor: '#a2dccd',
   },
   {
+    kind: 'image',
     src: '/pokemon-portraits/charmander.png',
     accentColor: '#f5b26b',
   },
   {
+    kind: 'image',
     src: '/pokemon-portraits/squirtle.png',
     accentColor: '#86c2df',
   },
   {
+    kind: 'image',
     src: '/pokemon-portraits/ditto.png',
     accentColor: '#d3bae8',
   },
 ]
 
 function getProjectCardBackground(projectId: string): CardBackground | undefined {
-  if (projectId !== 'pokopia-decor-dex') {
-    return undefined
+  if (projectId === 'pokopia-scene-editor') {
+    return {
+      kind: 'scene-grid',
+      accentColor: '#65d0b8',
+    }
   }
 
-  return decorDexBackgrounds[Math.floor(Math.random() * decorDexBackgrounds.length)]
+  if (projectId === 'pokopia-decor-dex') {
+    return decorDexBackgrounds[Math.floor(Math.random() * decorDexBackgrounds.length)]
+  }
+
+  return undefined
 }
+
+const sceneItemCells = new Map<number, string>([
+  [9, 'apple'],
+  [11, 'berry'],
+  [16, 'lamp'],
+  [18, 'table'],
+  [23, 'bean'],
+  [25, 'peach'],
+  [31, 'rug'],
+  [32, 'rug'],
+  [33, 'seat'],
+  [39, 'pond'],
+  [45, 'wheat'],
+])
 
 export function ProjectCard({ project }: ProjectCardProps) {
   const headingId = `${project.id}-title`
@@ -76,10 +102,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
       className="project-card"
       data-project-type={project.type}
       data-card-background={background ? 'true' : undefined}
+      data-card-background-kind={background?.kind}
       style={cardStyle}
       aria-labelledby={headingId}
     >
-      {background ? (
+      {background?.kind === 'image' ? (
         <img
           className="project-card__background"
           src={background.src}
@@ -87,6 +114,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           aria-hidden="true"
         />
       ) : null}
+      {background?.kind === 'scene-grid' ? <SceneGridBackground /> : null}
       <div className="project-card__header">
         <div>
           <h3 id={headingId}>{project.name}</h3>
@@ -120,6 +148,30 @@ export function ProjectCard({ project }: ProjectCardProps) {
     >
       {card}
     </a>
+  )
+}
+
+function SceneGridBackground() {
+  return (
+    <div className="project-card__scene-background" aria-hidden="true">
+      <div className="project-card__scene-grid">
+        {Array.from({ length: 49 }, (_, index) => {
+          const item = sceneItemCells.get(index)
+          const row = Math.floor(index / 7)
+          const column = index % 7
+          const zone = row === 0 || row === 6 || column === 0 || column === 6 ? 'edge' : 'core'
+
+          return (
+            <span
+              className="project-card__scene-cell"
+              data-scene-item={item}
+              data-scene-zone={zone}
+              key={index}
+            />
+          )
+        })}
+      </div>
+    </div>
   )
 }
 

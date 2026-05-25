@@ -383,7 +383,7 @@
   );
 }
 
-.project-card > :not(.project-card__background) {
+.project-card > :not(.project-card__background, .project-card__scene-background) {
   position: relative;
   z-index: 2;
 }
@@ -407,6 +407,144 @@
 .project-card[data-card-background="true"]:focus-within .project-card__background,
 .project-card-link:focus-visible .project-card__background {
   opacity: 1;
+}
+
+.project-card__scene-background {
+  aspect-ratio: 1;
+  display: grid;
+  opacity: 0.88;
+  place-items: center;
+  pointer-events: none;
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-25deg) scale(1.25);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+  width: min(31%, 154px);
+  z-index: 0;
+}
+
+.project-card__scene-grid {
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 60%), rgb(255 255 255 / 22%)),
+    #f8f0d4;
+  border: 2px solid color-mix(in srgb, var(--project-card-accent-color, #65d0b8) 72%, #ffffff);
+  border-radius: 6px;
+  box-shadow:
+    0 14px 24px rgb(28 73 54 / 16%),
+    inset 0 0 0 2px rgb(255 255 255 / 30%);
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(7, 1fr);
+  height: 100%;
+  padding: 6px;
+  width: 100%;
+}
+
+.project-card__scene-cell {
+  background: #fbf5d8;
+  border: 1px dashed rgb(178 151 120 / 30%);
+  border-radius: 2px;
+  min-width: 0;
+  position: relative;
+}
+
+.project-card__scene-cell[data-scene-zone="edge"] {
+  background: #dce8df;
+  border-color: rgb(86 135 119 / 30%);
+}
+
+.project-card__scene-cell[data-scene-item]::after {
+  border-radius: 3px;
+  content: "";
+  inset: 12%;
+  position: absolute;
+}
+
+.project-card__scene-cell[data-scene-item="apple"]::after {
+  background:
+    radial-gradient(circle at 72% 24%, #8bc96b 0 12%, transparent 13%),
+    radial-gradient(circle at 44% 56%, #e85a4d 0 46%, transparent 47%);
+  border-radius: 50%;
+}
+
+.project-card__scene-cell[data-scene-item="berry"]::after {
+  background:
+    radial-gradient(circle at 34% 42%, #7bcde2 0 30%, transparent 31%),
+    radial-gradient(circle at 66% 58%, #70b9d8 0 32%, transparent 33%),
+    radial-gradient(circle at 56% 26%, #77ba68 0 18%, transparent 19%);
+  border-radius: 50%;
+}
+
+.project-card__scene-cell[data-scene-item="lamp"]::after {
+  background: #f7c652;
+  border-radius: 50% 50% 42% 42%;
+  box-shadow: 0 5px 0 -2px #7b6756;
+}
+
+.project-card__scene-cell[data-scene-item="table"]::after,
+.project-card__scene-cell[data-scene-item="bean"]::after {
+  background: #c4875f;
+  box-shadow: inset 0 -3px 0 rgb(112 73 47 / 22%);
+}
+
+.project-card__scene-cell[data-scene-item="seat"]::after {
+  background: #8eb6dc;
+  border-radius: 50% 50% 35% 35%;
+}
+
+.project-card__scene-cell[data-scene-item="peach"]::after {
+  background:
+    radial-gradient(circle at 64% 24%, #8cca71 0 12%, transparent 13%),
+    radial-gradient(circle at 48% 56%, #f2b2a0 0 45%, transparent 46%);
+  border-radius: 50%;
+}
+
+.project-card__scene-cell[data-scene-item="rug"]::after {
+  background: #de8c7a;
+  inset: 10% 2%;
+}
+
+.project-card__scene-cell[data-scene-item="pond"]::after {
+  background: #7ecde6;
+  border-radius: 50%;
+}
+
+.project-card__scene-cell[data-scene-item="wheat"]::after {
+  background:
+    linear-gradient(90deg, transparent 0 42%, #9f8550 43% 56%, transparent 57%),
+    radial-gradient(ellipse at 36% 30%, #f2cd65 0 18%, transparent 19%),
+    radial-gradient(ellipse at 64% 42%, #edbf4c 0 18%, transparent 19%),
+    radial-gradient(ellipse at 38% 58%, #f4d273 0 18%, transparent 19%);
+}
+
+.project-card[data-card-background-kind="scene-grid"]:hover .project-card__scene-background,
+.project-card[data-card-background-kind="scene-grid"]:focus-within .project-card__scene-background,
+.project-card-link:focus-visible .project-card__scene-background {
+  opacity: 0.98;
+  transform: translateY(-50%) rotate(-25deg) scale(1.29);
+}
+
+:root[data-theme="dark"] .project-card__scene-grid {
+  background:
+    linear-gradient(135deg, rgb(213 255 236 / 22%), rgb(35 70 50 / 20%)),
+    #1e3c31;
+  border-color: color-mix(in srgb, var(--project-card-accent-color, #65d0b8) 64%, #244f3f);
+  box-shadow:
+    0 14px 24px rgb(0 0 0 / 24%),
+    inset 0 0 0 2px rgb(255 255 255 / 10%);
+}
+
+:root[data-theme="dark"] .project-card__scene-cell {
+  background: rgb(255 242 188 / 66%);
+  border-color: rgb(164 138 106 / 32%);
+}
+
+:root[data-theme="dark"] .project-card__scene-cell[data-scene-zone="edge"] {
+  background: rgb(206 229 217 / 56%);
+  border-color: rgb(159 230 204 / 28%);
 }
 
 .project-card__header {
