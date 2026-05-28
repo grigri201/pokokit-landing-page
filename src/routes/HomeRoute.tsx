@@ -324,7 +324,7 @@ export function HomeRoute({
                   感谢你使用 pokokit，希望你喜欢这些工具
                 </p>
                 <p className="author-modal__bubble">
-                  抱歉因为作者进度比较慢，一些素材没有解锁，可能体积不对。勘误数据或提出建议可以{' '}
+                  抱歉，因为作者游戏进度比较慢，一些素材没有解锁，可能体积不对。勘误数据或提出建议可以{' '}
                   <a
                     href={authorIssueUrl}
                     rel="noopener noreferrer"

@@ -155,7 +155,7 @@ describe('HomeRoute', () => {
       within(dialog).getByText('感谢你使用 pokokit，希望你喜欢这些工具'),
     ).toBeInTheDocument()
     expect(
-      within(dialog).getByText(/抱歉因为作者进度比较慢/),
+      within(dialog).getByText(/抱歉，因为作者游戏进度比较慢/),
     ).toBeInTheDocument()
     expect(issueLink).toHaveAttribute(
       'href',
