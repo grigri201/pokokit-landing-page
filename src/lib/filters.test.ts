@@ -14,7 +14,7 @@ describe('project filters', () => {
   it('filters by status', () => {
     expect(
       filterProjects(projects, { status: 'available' }).map((project) => project.id),
-    ).toEqual(['pokopia-decor-dex', 'pokopia-scene-editor'])
+    ).toEqual(['pokopia-scene-editor', 'pokopia-decor-dex'])
   })
 
   it('filters by capability', () => {

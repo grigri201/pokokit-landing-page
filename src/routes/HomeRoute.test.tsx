@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { extendedProjects } from '../test/project-fixtures'
 import { HomeRoute } from './HomeRoute'
@@ -14,6 +14,14 @@ describe('HomeRoute', () => {
     expect(screen.getByRole('heading', { name: 'pokokit' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '切换到深色模式' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '切换到英文' })).toHaveTextContent('EN')
+    const authorButton = screen.getByRole('button', {
+      name: '打开 @赛博许愿机 留言',
+    })
+    expect(authorButton).toHaveAttribute('title', '@赛博许愿机')
+    expect(authorButton.querySelector('img')).toHaveAttribute(
+      'src',
+      '/cyber-wishing-machine-icon.png',
+    )
     expect(screen.getByRole('link', { name: '打开 GitHub: grigri201' })).toHaveAttribute(
       'href',
       'https://github.com/grigri201',
@@ -22,6 +30,11 @@ describe('HomeRoute', () => {
       'rel',
       'noopener noreferrer',
     )
+    expect(
+      authorButton.compareDocumentPosition(
+        screen.getByRole('link', { name: '打开 GitHub: grigri201' }),
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy()
     expect(screen.getByRole('contentinfo', { name: '@' })).toHaveTextContent(
       '@赛博许愿机',
     )
@@ -35,6 +48,10 @@ describe('HomeRoute', () => {
 
     expect(screen.queryByRole('heading', { name: 'Status Tracker' })).not.toBeInTheDocument()
     expect(screen.getByRole('list', { name: /Projects/i })).toBeInTheDocument()
+    expect(screen.getAllByRole('article').map((card) => card.getAttribute('aria-labelledby'))).toEqual([
+      'pokopia-scene-editor-title',
+      'pokopia-decor-dex-title',
+    ])
 
     const decorCard = screen.getByRole('article', { name: 'Pokopia Decor Dex' })
     expect(decorCard).toHaveAttribute('data-card-background', 'true')
@@ -116,6 +133,62 @@ describe('HomeRoute', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('opens and closes the Cyber Wishing Machine chat modal', () => {
+    render(<HomeRoute />)
+
+    fireEvent.click(screen.getByRole('button', { name: '打开 @赛博许愿机 留言' }))
+
+    const dialog = screen.getByRole('dialog', { name: '@赛博许愿机' })
+    const appContent = document.querySelector('.app-content')
+    const closeButton = within(dialog).getByRole('button', {
+      name: '关闭 @赛博许愿机 对话',
+    })
+    const issueLink = within(dialog).getByRole('link', { name: '发 issue' })
+    expect(appContent).toHaveAttribute('aria-hidden', 'true')
+    expect(appContent).toHaveAttribute('inert')
+    expect(closeButton).toHaveFocus()
+    expect(within(dialog).getByAltText('@赛博许愿机')).toHaveAttribute(
+      'src',
+      '/cyber-wishing-machine-icon.png',
+    )
+    expect(
+      within(dialog).getByText('感谢你使用 pokokit，希望你喜欢这些工具'),
+    ).toBeInTheDocument()
+    expect(
+      within(dialog).getByText(/抱歉因为作者进度比较慢/),
+    ).toBeInTheDocument()
+    expect(issueLink).toHaveAttribute(
+      'href',
+      'https://github.com/grigri201/pokokit-landing-page/issues/new',
+    )
+    expect(within(dialog).getByText(/QQ: 3693767633/)).toBeInTheDocument()
+    expect(
+      within(dialog).getByText('岛建进度完全落后了，人为什么需要睡觉'),
+    ).toBeInTheDocument()
+
+    issueLink.focus()
+    fireEvent.keyDown(window, { key: 'Tab' })
+    expect(closeButton).toHaveFocus()
+
+    fireEvent.keyDown(window, { key: 'Tab', shiftKey: true })
+    expect(issueLink).toHaveFocus()
+
+    fireEvent.click(closeButton)
+    expect(screen.queryByRole('dialog', { name: '@赛博许愿机' })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '打开 @赛博许愿机 留言' })).toHaveFocus()
+    expect(appContent).not.toHaveAttribute('aria-hidden')
+    expect(appContent).not.toHaveAttribute('inert')
+
+    fireEvent.click(screen.getByRole('button', { name: '打开 @赛博许愿机 留言' }))
+    fireEvent.keyDown(window, { key: 'Escape' })
+    expect(screen.queryByRole('dialog', { name: '@赛博许愿机' })).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: '打开 @赛博许愿机 留言' }))
+    const reopenedDialog = screen.getByRole('dialog', { name: '@赛博许愿机' })
+    fireEvent.click(reopenedDialog.parentElement as HTMLElement)
+    expect(screen.queryByRole('dialog', { name: '@赛博许愿机' })).not.toBeInTheDocument()
+  })
+
   it('ignores legacy filter query params while filtering is disabled', () => {
     window.history.replaceState({}, '', '/?status=available&capability=建筑层')
 
@@ -150,6 +223,10 @@ describe('HomeRoute', () => {
 
     expect(screen.getByRole('button', { name: 'Switch to light mode' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Switch to Chinese' })).toHaveTextContent('中')
+    expect(screen.getByRole('button', { name: 'Open @赛博许愿机 message' })).toHaveAttribute(
+      'title',
+      '@赛博许愿机',
+    )
     expect(screen.getByRole('link', { name: 'Open GitHub: grigri201' })).toHaveAttribute(
       'href',
       'https://github.com/grigri201',

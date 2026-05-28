@@ -18,6 +18,10 @@ test('renders the manifest-backed landing baseline', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'pokokit' })).toBeVisible()
   await expect(page.getByRole('button', { name: '切换到深色模式' })).toBeVisible()
   await expect(page.getByRole('button', { name: '切换到英文' })).toHaveText('EN')
+  await expect(page.getByRole('button', { name: '打开 @赛博许愿机 留言' })).toHaveAttribute(
+    'title',
+    '@赛博许愿机',
+  )
   await expect(page.getByRole('link', { name: '打开 GitHub: grigri201' })).toHaveAttribute(
     'href',
     'https://github.com/grigri201',
@@ -26,6 +30,10 @@ test('renders the manifest-backed landing baseline', async ({ page }) => {
   await expect(page.getByRole('button', { name: '全部项目' })).toHaveCount(0)
   await expect(page.getByText('Pokopia Decor Dex')).toBeVisible()
   await expect(page.getByText('Pokopia Scene Editor')).toBeVisible()
+  await expect(page.getByRole('article').first()).toHaveAttribute(
+    'aria-labelledby',
+    'pokopia-scene-editor-title',
+  )
   await expect(page.getByRole('contentinfo', { name: '@' })).toContainText(
     '赛博许愿机',
   )
@@ -55,6 +63,10 @@ test('language toggle switches home copy between Chinese and English', async ({
   await expect(page.locator('html')).toHaveAttribute('lang', 'en')
   await expect(page.getByRole('button', { name: 'Switch to dark mode' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Switch to Chinese' })).toHaveText('中')
+  await expect(page.getByRole('button', { name: 'Open @赛博许愿机 message' })).toHaveAttribute(
+    'title',
+    '@赛博许愿机',
+  )
   await expect(page.getByRole('link', { name: 'Open GitHub: grigri201' })).toBeVisible()
   await expect(
     page.getByText('A Pokopia dex for Pokemon colors, preference terms, and decor pairings.'),
@@ -140,8 +152,66 @@ test('keyboard users can reach theme and project actions without filters', async
 
   await expectNextTabFocus(page, /切换到深色模式/)
   await expectNextTabFocus(page, /EN/)
+  await expectNextTabFocus(page, /打开 @赛博许愿机 留言/)
   await expectNextTabFocus(page, /打开 GitHub: grigri201/)
-  await expectNextTabFocus(page, /打开 Decor Dex 工具/)
+  await expectNextTabFocus(page, /打开 Scene Editor 工具/)
+})
+
+test('Cyber Wishing Machine modal shows chat copy and closes with Escape', async ({
+  page,
+}) => {
+  await setLightTheme(page)
+  await page.goto('/')
+
+  await page.getByRole('button', { name: '打开 @赛博许愿机 留言' }).click()
+
+  const dialog = page.getByRole('dialog', { name: '@赛博许愿机' })
+  await expect(dialog).toBeVisible()
+  await expect(page.locator('.app-content')).toHaveAttribute('aria-hidden', 'true')
+  await expect(page.locator('.app-content')).toHaveAttribute('inert', '')
+  await expect(dialog.getByAltText('@赛博许愿机')).toHaveAttribute(
+    'src',
+    '/cyber-wishing-machine-icon.png',
+  )
+  await expect(dialog.getByText('感谢你使用 pokokit，希望你喜欢这些工具')).toBeVisible()
+  await expect(dialog.getByRole('link', { name: '发 issue' })).toHaveAttribute(
+    'href',
+    'https://github.com/grigri201/pokokit-landing-page/issues/new',
+  )
+  await expect(dialog.getByText(/QQ: 3693767633/)).toBeVisible()
+  await expect(dialog.getByText('岛建进度完全落后了，人为什么需要睡觉')).toBeVisible()
+
+  await expect(dialog.getByRole('button', { name: '关闭 @赛博许愿机 对话' })).toBeFocused()
+  await page.keyboard.press('Shift+Tab')
+  await expect(dialog.getByRole('link', { name: '发 issue' })).toBeFocused()
+  await page.keyboard.press('Tab')
+  await expect(dialog.getByRole('button', { name: '关闭 @赛博许愿机 对话' })).toBeFocused()
+
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog', { name: '@赛博许愿机' })).toHaveCount(0)
+  await expect(page.locator('.app-content')).not.toHaveAttribute('aria-hidden', 'true')
+  await expect(page.locator('.app-content')).not.toHaveAttribute('inert', '')
+  await expect(page.getByRole('button', { name: '打开 @赛博许愿机 留言' })).toBeFocused()
+})
+
+test('Cyber Wishing Machine modal supports close button, backdrop, mobile, and dark mode', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await page.goto('/')
+
+  await page.getByRole('button', { name: '打开 @赛博许愿机 留言' }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await expect(page.getByRole('dialog', { name: '@赛博许愿机' })).toBeVisible()
+  await expectNoHorizontalOverflow(page)
+
+  await page.getByRole('button', { name: '关闭 @赛博许愿机 对话' }).click()
+  await expect(page.getByRole('dialog', { name: '@赛博许愿机' })).toHaveCount(0)
+
+  await page.getByRole('button', { name: '打开 @赛博许愿机 留言' }).click()
+  await page.locator('.author-modal-backdrop').click({ position: { x: 8, y: 8 } })
+  await expect(page.getByRole('dialog', { name: '@赛博许愿机' })).toHaveCount(0)
 })
 
 test('legacy filter query keeps the root page readable', async ({
@@ -161,6 +231,7 @@ test('legacy filter query keeps the root page readable', async ({
 async function expectHomeCoreContent(page: Page) {
   await expect(page.getByRole('heading', { name: 'pokokit' })).toBeVisible()
   await expect(page.getByRole('button', { name: '切换到英文' })).toBeVisible()
+  await expect(page.getByRole('button', { name: '打开 @赛博许愿机 留言' })).toBeVisible()
   await expect(page.getByRole('group', { name: 'Project filters' })).toHaveCount(0)
   await expect(page.getByRole('heading', { name: 'Projects' })).toHaveCount(0)
   await expect(page.getByRole('list', { name: 'Projects' })).toBeVisible()

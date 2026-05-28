@@ -122,4 +122,14 @@ export const projectManifest = {
 } as const
 
 export const validatedProjectManifest = validateProjectManifest(projectManifest)
-export const projects = validatedProjectManifest.projects
+export const projects = [...validatedProjectManifest.projects].sort((project, nextProject) => {
+  if (project.id === 'pokopia-scene-editor') {
+    return -1
+  }
+
+  if (nextProject.id === 'pokopia-scene-editor') {
+    return 1
+  }
+
+  return 0
+})
