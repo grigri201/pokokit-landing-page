@@ -335,7 +335,10 @@ export function HomeRoute({
                   或者联系 QQ: 3693767633
                 </p>
                 <p className="author-modal__bubble">
-                  岛建进度完全落后了，人为什么需要睡觉
+                  嘿嘿嘿嘿，正在憋一个大活。
+                </p>
+                <p className="author-modal__bubble">
+                  我的初心其实是可以让大家免登录直接使用，随用随走，可是这对保存多张岛建方案不利。我有点犹豫……
                 </p>
               </div>
             </div>

@@ -174,12 +174,18 @@ test('Cyber Wishing Machine modal shows chat copy and closes with Escape', async
     '/cyber-wishing-machine-icon.png',
   )
   await expect(dialog.getByText('感谢你使用 pokokit，希望你喜欢这些工具')).toBeVisible()
+  await expect(dialog.getByText(/抱歉，因为作者游戏进度比较慢/)).toBeVisible()
   await expect(dialog.getByRole('link', { name: '发 issue' })).toHaveAttribute(
     'href',
     'https://github.com/grigri201/pokokit-landing-page/issues/new',
   )
   await expect(dialog.getByText(/QQ: 3693767633/)).toBeVisible()
-  await expect(dialog.getByText('岛建进度完全落后了，人为什么需要睡觉')).toBeVisible()
+  await expect(dialog.getByText('嘿嘿嘿嘿，正在憋一个大活。')).toBeVisible()
+  await expect(
+    dialog.getByText(
+      '我的初心其实是可以让大家免登录直接使用，随用随走，可是这对保存多张岛建方案不利。我有点犹豫……',
+    ),
+  ).toBeVisible()
 
   await expect(dialog.getByRole('button', { name: '关闭 @赛博许愿机 对话' })).toBeFocused()
   await page.keyboard.press('Shift+Tab')
