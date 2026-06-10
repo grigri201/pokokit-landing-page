@@ -59,15 +59,15 @@ describe('HomeRoute', () => {
       within(galleryCard).getByText('浏览公开 Pokopia 布景，并找回你保存到 Gallery 的场景。'),
     ).toBeInTheDocument()
     expect(galleryCard).toHaveAttribute('data-card-background', 'true')
-    expect(galleryCard).toHaveAttribute('data-card-background-kind', 'scene-grid')
+    expect(galleryCard).toHaveAttribute('data-card-background-kind', 'gallery-cards')
     expect(galleryCard.style.getPropertyValue('--project-card-accent-color')).toBe(
-      '#86c2df',
+      '#7bb8df',
     )
-    expect(galleryCard.querySelector('.project-card__scene-grid')).toBeInTheDocument()
-    expect(galleryCard.querySelectorAll('.project-card__scene-cell')).toHaveLength(49)
+    expect(galleryCard.querySelector('.project-card__gallery-background')).toBeInTheDocument()
     expect(
-      galleryCard.querySelectorAll('.project-card__scene-cell[data-scene-item]'),
-    ).toHaveLength(10)
+      galleryCard.querySelectorAll('.project-card__gallery-card'),
+    ).toHaveLength(5)
+    expect(galleryCard.querySelector('.project-card__scene-grid')).not.toBeInTheDocument()
     expect(galleryCard.querySelector('.project-card__background')).not.toBeInTheDocument()
     expect(within(galleryCard).queryByText('公开场景')).not.toBeInTheDocument()
     expect(within(galleryCard).queryByText('查看本地仓库')).not.toBeInTheDocument()

@@ -19,8 +19,8 @@ type ProjectCardProps = {
 
 type CardBackground = {
   accentColor: string
-  kind: 'image' | 'scene-grid'
-  sceneVariant?: 'editor' | 'gallery'
+  kind: 'gallery-cards' | 'image' | 'scene-grid'
+  sceneVariant?: 'editor'
   src?: string
 }
 
@@ -62,9 +62,8 @@ function getProjectCardBackground(projectId: string): CardBackground | undefined
 
   if (projectId === 'pokokit-gallery') {
     return {
-      kind: 'scene-grid',
-      accentColor: '#86c2df',
-      sceneVariant: 'gallery',
+      kind: 'gallery-cards',
+      accentColor: '#7bb8df',
     }
   }
 
@@ -89,19 +88,9 @@ const sceneItemCellsByVariant = {
     [39, 'pond'],
     [45, 'wheat'],
   ]),
-  gallery: new Map<number, string>([
-    [8, 'pond'],
-    [10, 'berry'],
-    [15, 'rug'],
-    [16, 'rug'],
-    [17, 'seat'],
-    [24, 'lamp'],
-    [30, 'apple'],
-    [32, 'table'],
-    [38, 'peach'],
-    [40, 'wheat'],
-  ]),
-} satisfies Record<'editor' | 'gallery', Map<number, string>>
+} satisfies Record<'editor', Map<number, string>>
+
+const galleryCardTones = ['sky', 'mint', 'sun', 'coral', 'lilac'] as const
 
 export function ProjectCard({ project }: ProjectCardProps) {
   const headingId = `${project.id}-title`
@@ -141,6 +130,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
       {background?.kind === 'scene-grid' ? (
         <SceneGridBackground variant={background.sceneVariant ?? 'editor'} />
       ) : null}
+      {background?.kind === 'gallery-cards' ? (
+        <GalleryCardsBackground />
+      ) : null}
       <div className="project-card__header">
         <div>
           <h3 id={headingId}>{project.name}</h3>
@@ -177,7 +169,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   )
 }
 
-function SceneGridBackground({ variant }: { variant: 'editor' | 'gallery' }) {
+function SceneGridBackground({ variant }: { variant: 'editor' }) {
   const sceneItemCells = sceneItemCellsByVariant[variant]
 
   return (
@@ -199,6 +191,16 @@ function SceneGridBackground({ variant }: { variant: 'editor' | 'gallery' }) {
           )
         })}
       </div>
+    </div>
+  )
+}
+
+function GalleryCardsBackground() {
+  return (
+    <div className="project-card__gallery-background" aria-hidden="true">
+      {galleryCardTones.map((tone) => (
+        <span className="project-card__gallery-card" data-gallery-card={tone} key={tone} />
+      ))}
     </div>
   )
 }
