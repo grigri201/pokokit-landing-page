@@ -57,6 +57,7 @@ describe('SEO metadata', () => {
       'Pokopia tool directory',
     )
     expect(metaNameContent(document, 'description')).toContain('Decor Dex')
+    expect(metaNameContent(document, 'description')).toContain('Gallery')
     expect(metaNameContent(document, 'robots')).toBe('index,follow')
     expect(metaPropertyContent(document, 'og:locale')).toBe('en_US')
     expect(metaPropertyContent(document, 'og:site_name')).toBe('pokokit')
@@ -142,6 +143,7 @@ describe('SEO metadata', () => {
     expect(projectNames).toEqual([
       'Pokopia Decor Dex',
       'Pokopia Scene Editor',
+      'Pokokit Gallery',
     ])
     expect(projectList?.itemListElement?.[0]?.item).toMatchObject({
       '@type': 'WebApplication',
@@ -149,6 +151,11 @@ describe('SEO metadata', () => {
       url: 'https://decor-dex.pokokit.com',
     })
     expect(projectList?.itemListElement?.[1]?.item?.url).toBeUndefined()
+    expect(projectList?.itemListElement?.[2]?.item).toMatchObject({
+      '@type': 'WebApplication',
+      name: 'Pokokit Gallery',
+      url: 'https://gallery.pokokit.com',
+    })
   })
 
   it('exposes crawler discovery files for the root landing page', async () => {

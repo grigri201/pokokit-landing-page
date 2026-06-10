@@ -118,18 +118,74 @@ export const projectManifest = {
       ],
       maintainerNotes: ['Scene Editor 当前公开入口由 landing-page manifest 人工维护。'],
     },
+    {
+      id: 'pokokit-gallery',
+      name: 'Pokokit Gallery',
+      type: 'showcase',
+      status: 'available',
+      tagline: '浏览公开 Pokopia 布景，并找回你保存到 Gallery 的场景。',
+      audiences: ['Pokopia 创作者', '回访和分享用户', 'Pokopia 工具维护者'],
+      primaryUseCases: [
+        '浏览公开 Pokopia 布景',
+        '登录后查看自己保存的场景',
+        '从 Gallery 跳转到 Scene Editor 继续查看或编辑',
+      ],
+      capabilities: ['公开场景', '我的场景', '跳转编辑器'],
+      entrypoints: [
+        {
+          id: 'gallery-public-tool',
+          kind: 'tool',
+          availability: 'available',
+          label: '打开 Gallery',
+          href: 'https://gallery.pokokit.com',
+          note: '外部公开工具入口，将打开 Pokokit Gallery。',
+          isPrimary: true,
+        },
+        {
+          id: 'gallery-local-repo',
+          kind: 'repo',
+          availability: 'local-only',
+          label: '查看本地仓库',
+          href: '../gallery',
+          note: '开发者本地路径，不是公开工具入口。',
+        },
+      ],
+      sourcePolicy: {
+        displaySource: 'landing-manifest',
+        initializedFrom: [
+          '_bmad-output/project-context.md',
+          '_bmad-output/planning-artifacts/ux-design-specification.md',
+        ],
+        doesNotRead: [
+          'SceneDocument save payloads',
+          'Supabase browser session',
+          'server-only secrets',
+          'Scene API private owner records',
+        ],
+      },
+      dataFreshness: 'manual',
+      problem: '帮助创作者浏览公开布景，并从云端 Gallery 找回自己保存的场景。',
+      relatedProjects: [
+        {
+          projectId: 'pokopia-scene-editor',
+          relationship: 'Gallery 打开 scene 时跳转 Scene Editor，但不直接编辑 SceneDocument。',
+        },
+      ],
+      maintainerNotes: ['Gallery 当前公开入口由 landing-page manifest 人工维护。'],
+    },
   ],
 } as const
 
 export const validatedProjectManifest = validateProjectManifest(projectManifest)
+
+const projectCardOrder = new Map([
+  ['pokopia-scene-editor', 0],
+  ['pokokit-gallery', 1],
+])
+
 export const projects = [...validatedProjectManifest.projects].sort((project, nextProject) => {
-  if (project.id === 'pokopia-scene-editor') {
-    return -1
-  }
-
-  if (nextProject.id === 'pokopia-scene-editor') {
-    return 1
-  }
-
-  return 0
+  return (
+    (projectCardOrder.get(project.id) ?? Number.MAX_SAFE_INTEGER) -
+    (projectCardOrder.get(nextProject.id) ?? Number.MAX_SAFE_INTEGER)
+  )
 })

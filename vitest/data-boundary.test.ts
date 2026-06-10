@@ -86,6 +86,11 @@ describe('data boundary enforcement', () => {
         dataFreshness: 'manual',
         displaySource: 'landing-manifest',
       },
+      {
+        id: 'pokokit-gallery',
+        dataFreshness: 'manual',
+        displaySource: 'landing-manifest',
+      },
     ])
   })
 

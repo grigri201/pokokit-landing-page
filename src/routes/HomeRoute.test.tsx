@@ -43,15 +43,38 @@ describe('HomeRoute', () => {
     expect(screen.queryByText(/统一账号|统一后端|云同步|数据合并/)).not.toBeInTheDocument()
   })
 
-  it('renders both initial Project Cards from the manifest', () => {
+  it('renders the initial Project Cards from the manifest', () => {
     render(<HomeRoute />)
 
     expect(screen.queryByRole('heading', { name: 'Status Tracker' })).not.toBeInTheDocument()
     expect(screen.getByRole('list', { name: /Projects/i })).toBeInTheDocument()
     expect(screen.getAllByRole('article').map((card) => card.getAttribute('aria-labelledby'))).toEqual([
       'pokopia-scene-editor-title',
+      'pokokit-gallery-title',
       'pokopia-decor-dex-title',
     ])
+
+    const galleryCard = screen.getByRole('article', { name: 'Pokokit Gallery' })
+    expect(
+      within(galleryCard).getByText('浏览公开 Pokopia 布景，并找回你保存到 Gallery 的场景。'),
+    ).toBeInTheDocument()
+    expect(galleryCard).toHaveAttribute('data-card-background', 'true')
+    expect(galleryCard).toHaveAttribute('data-card-background-kind', 'scene-grid')
+    expect(galleryCard.style.getPropertyValue('--project-card-accent-color')).toBe(
+      '#86c2df',
+    )
+    expect(galleryCard.querySelector('.project-card__scene-grid')).toBeInTheDocument()
+    expect(galleryCard.querySelectorAll('.project-card__scene-cell')).toHaveLength(49)
+    expect(
+      galleryCard.querySelectorAll('.project-card__scene-cell[data-scene-item]'),
+    ).toHaveLength(10)
+    expect(galleryCard.querySelector('.project-card__background')).not.toBeInTheDocument()
+    expect(within(galleryCard).queryByText('公开场景')).not.toBeInTheDocument()
+    expect(within(galleryCard).queryByText('查看本地仓库')).not.toBeInTheDocument()
+    const galleryCardLink = screen.getByRole('link', { name: /打开 Gallery/ })
+    expect(galleryCardLink).toContainElement(galleryCard)
+    expect(galleryCardLink).toHaveAttribute('href', 'https://gallery.pokokit.com')
+    expect(galleryCardLink).toHaveAttribute('rel', 'noopener noreferrer')
 
     const decorCard = screen.getByRole('article', { name: 'Pokopia Decor Dex' })
     expect(decorCard).toHaveAttribute('data-card-background', 'true')
@@ -203,12 +226,14 @@ describe('HomeRoute', () => {
     expect(screen.queryByRole('group', { name: 'Project filters' })).not.toBeInTheDocument()
     expect(screen.getByRole('article', { name: 'Pokopia Decor Dex' })).toBeInTheDocument()
     expect(screen.getByRole('article', { name: 'Pokopia Scene Editor' })).toBeInTheDocument()
+    expect(screen.getByRole('article', { name: 'Pokokit Gallery' })).toBeInTheDocument()
   })
 
-  it('renders a legal third project from injected manifest data', () => {
+  it('renders a legal additional project from injected manifest data', () => {
     render(<HomeRoute projectList={extendedProjects} />)
 
     expect(screen.getByRole('article', { name: 'Pokopia Map Planner' })).toBeInTheDocument()
+    expect(screen.getByRole('article', { name: 'Pokokit Gallery' })).toBeInTheDocument()
     expect(screen.getByRole('article', { name: 'Pokopia Decor Dex' })).toBeInTheDocument()
     expect(screen.getByRole('article', { name: 'Pokopia Scene Editor' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Experimental' })).not.toBeInTheDocument()
@@ -268,5 +293,16 @@ describe('HomeRoute', () => {
     expect(
       within(sceneCard).queryByText('Still debugging. Please wait a little longer.'),
     ).not.toBeInTheDocument()
+
+    const galleryCard = screen.getByRole('article', { name: 'Pokokit Gallery' })
+    expect(
+      within(galleryCard).getByText(
+        'Browse public Pokopia scenes and recover the scenes you saved to Gallery.',
+      ),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Open Gallery/ })).toHaveAttribute(
+      'href',
+      'https://gallery.pokokit.com',
+    )
   })
 })

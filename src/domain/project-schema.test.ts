@@ -4,19 +4,21 @@ import { extendedProjectManifest } from '../test/project-fixtures'
 import { validateProjectManifest } from './project-validation'
 
 describe('Project Manifest v1 validation', () => {
-  it('accepts the first two stable Pokopia project records', () => {
+  it('accepts the stable Pokopia project records', () => {
     const manifest = validateProjectManifest(projectManifest)
 
     expect(manifest.projects.map((project) => project.id)).toEqual([
       'pokopia-decor-dex',
       'pokopia-scene-editor',
+      'pokokit-gallery',
     ])
   })
 
-  it('accepts a legal third project record without schema changes', () => {
+  it('accepts a legal additional project record without schema changes', () => {
     expect(extendedProjectManifest.projects.map((project) => project.id)).toEqual([
       'pokopia-decor-dex',
       'pokopia-scene-editor',
+      'pokokit-gallery',
       'pokopia-map-planner',
     ])
   })

@@ -30,9 +30,14 @@ test('renders the manifest-backed landing baseline', async ({ page }) => {
   await expect(page.getByRole('button', { name: '全部项目' })).toHaveCount(0)
   await expect(page.getByText('Pokopia Decor Dex')).toBeVisible()
   await expect(page.getByText('Pokopia Scene Editor')).toBeVisible()
+  await expect(page.getByText('Pokokit Gallery')).toBeVisible()
   await expect(page.getByRole('article').first()).toHaveAttribute(
     'aria-labelledby',
     'pokopia-scene-editor-title',
+  )
+  await expect(page.getByRole('article').nth(1)).toHaveAttribute(
+    'aria-labelledby',
+    'pokokit-gallery-title',
   )
   await expect(page.getByRole('contentinfo', { name: '@' })).toContainText(
     '赛博许愿机',
@@ -72,6 +77,7 @@ test('language toggle switches home copy between Chinese and English', async ({
     page.getByText('A Pokopia dex for Pokemon colors, preference terms, and decor pairings.'),
   ).toBeVisible()
   await expect(page.getByRole('link', { name: /Open Decor Dex Tool/ })).toBeVisible()
+  await expect(page.getByRole('link', { name: /Open Gallery/ })).toBeVisible()
   await expect(page.getByRole('contentinfo', { name: '@' })).toContainText(
     'Cyber Wishing Machine',
   )
@@ -111,6 +117,7 @@ test('redirects unsupported paths back to root', async ({ page }) => {
   for (const unsupportedPath of [
     '/projects/pokopia-decor-dex',
     '/projects/pokopia-scene-editor',
+    '/projects/pokokit-gallery',
     '/projects/not-a-project',
     '/unexpected-path',
     '/#/projects/pokopia-decor-dex',
@@ -228,6 +235,7 @@ test('legacy filter query keeps the root page readable', async ({
 
   await expect(page.getByText('Pokopia Decor Dex')).toBeVisible()
   await expect(page.getByText('Pokopia Scene Editor')).toBeVisible()
+  await expect(page.getByText('Pokokit Gallery')).toBeVisible()
   await expect(page.getByRole('button', { name: '清除筛选' })).toHaveCount(0)
   await expectNoHorizontalOverflow(page)
   await expectNoVisibleBlockOverlap(page)
@@ -244,6 +252,7 @@ async function expectHomeCoreContent(page: Page) {
   await expect(page.getByRole('heading', { name: 'Status Tracker' })).toHaveCount(0)
   await expect(page.getByText('Pokopia Decor Dex')).toBeVisible()
   await expect(page.getByText('Pokopia Scene Editor')).toBeVisible()
+  await expect(page.getByText('Pokokit Gallery')).toBeVisible()
   await expect(page.getByRole('contentinfo')).toBeVisible()
   await expect(page.getByText('Available')).toHaveCount(0)
   await expect(page.getByText('WIP')).toHaveCount(0)
@@ -251,6 +260,7 @@ async function expectHomeCoreContent(page: Page) {
   await expect(page.getByLabel('Pokopia Scene Editor 能力标签')).toHaveCount(0)
   await expect(page.getByRole('link', { name: /打开 Decor Dex 工具/ })).toBeVisible()
   await expect(page.getByRole('link', { name: /打开 Scene Editor 工具/ })).toBeVisible()
+  await expect(page.getByRole('link', { name: /打开 Gallery/ })).toBeVisible()
   await expect(page.getByText('正在调试中，还要等一会儿哦')).toHaveCount(0)
 }
 

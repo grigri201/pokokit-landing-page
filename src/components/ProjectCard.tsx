@@ -20,6 +20,7 @@ type ProjectCardProps = {
 type CardBackground = {
   accentColor: string
   kind: 'image' | 'scene-grid'
+  sceneVariant?: 'editor' | 'gallery'
   src?: string
 }
 
@@ -55,6 +56,15 @@ function getProjectCardBackground(projectId: string): CardBackground | undefined
     return {
       kind: 'scene-grid',
       accentColor: '#65d0b8',
+      sceneVariant: 'editor',
+    }
+  }
+
+  if (projectId === 'pokokit-gallery') {
+    return {
+      kind: 'scene-grid',
+      accentColor: '#86c2df',
+      sceneVariant: 'gallery',
     }
   }
 
@@ -65,19 +75,33 @@ function getProjectCardBackground(projectId: string): CardBackground | undefined
   return undefined
 }
 
-const sceneItemCells = new Map<number, string>([
-  [9, 'apple'],
-  [11, 'berry'],
-  [16, 'lamp'],
-  [18, 'table'],
-  [23, 'bean'],
-  [25, 'peach'],
-  [31, 'rug'],
-  [32, 'rug'],
-  [33, 'seat'],
-  [39, 'pond'],
-  [45, 'wheat'],
-])
+const sceneItemCellsByVariant = {
+  editor: new Map<number, string>([
+    [9, 'apple'],
+    [11, 'berry'],
+    [16, 'lamp'],
+    [18, 'table'],
+    [23, 'bean'],
+    [25, 'peach'],
+    [31, 'rug'],
+    [32, 'rug'],
+    [33, 'seat'],
+    [39, 'pond'],
+    [45, 'wheat'],
+  ]),
+  gallery: new Map<number, string>([
+    [8, 'pond'],
+    [10, 'berry'],
+    [15, 'rug'],
+    [16, 'rug'],
+    [17, 'seat'],
+    [24, 'lamp'],
+    [30, 'apple'],
+    [32, 'table'],
+    [38, 'peach'],
+    [40, 'wheat'],
+  ]),
+} satisfies Record<'editor' | 'gallery', Map<number, string>>
 
 export function ProjectCard({ project }: ProjectCardProps) {
   const headingId = `${project.id}-title`
@@ -114,7 +138,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
           aria-hidden="true"
         />
       ) : null}
-      {background?.kind === 'scene-grid' ? <SceneGridBackground /> : null}
+      {background?.kind === 'scene-grid' ? (
+        <SceneGridBackground variant={background.sceneVariant ?? 'editor'} />
+      ) : null}
       <div className="project-card__header">
         <div>
           <h3 id={headingId}>{project.name}</h3>
@@ -151,7 +177,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
   )
 }
 
-function SceneGridBackground() {
+function SceneGridBackground({ variant }: { variant: 'editor' | 'gallery' }) {
+  const sceneItemCells = sceneItemCellsByVariant[variant]
+
   return (
     <div className="project-card__scene-background" aria-hidden="true">
       <div className="project-card__scene-grid">

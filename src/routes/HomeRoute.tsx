@@ -79,6 +79,13 @@ const homeProjectCopy: Record<LanguageMode, Record<string, ProjectCopy>> = {
         'scene-editor-planning-docs': 'View Planning Docs',
       },
     },
+    'pokokit-gallery': {
+      tagline: 'Browse public Pokopia scenes and recover the scenes you saved to Gallery.',
+      entrypointLabels: {
+        'gallery-public-tool': 'Open Gallery',
+        'gallery-local-repo': 'View Local Repository',
+      },
+    },
   },
 }
 

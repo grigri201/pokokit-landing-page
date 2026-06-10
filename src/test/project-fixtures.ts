@@ -42,10 +42,18 @@ export const thirdProject = {
   maintainerNotes: ['测试 fixture，只用于扩展路径验证。'],
 } satisfies ProjectCard
 
+const sceneEditorProject = projectManifest.projects.find(
+  (project) => project.id === 'pokopia-scene-editor',
+)
+
+if (!sceneEditorProject) {
+  throw new Error('Missing pokopia-scene-editor project fixture')
+}
+
 const sceneEditorWithThirdRelation = {
-  ...projectManifest.projects[1],
+  ...sceneEditorProject,
   relatedProjects: [
-    ...(projectManifest.projects[1].relatedProjects ?? []),
+    ...(sceneEditorProject.relatedProjects ?? []),
     {
       projectId: thirdProject.id,
       relationship: '语义关联和参考关系，保持独立工具边界。',
@@ -56,8 +64,9 @@ const sceneEditorWithThirdRelation = {
 export const extendedProjectManifest = validateProjectManifest({
   ...projectManifest,
   projects: [
-    projectManifest.projects[0],
-    sceneEditorWithThirdRelation,
+    ...projectManifest.projects.map((project) =>
+      project.id === sceneEditorProject.id ? sceneEditorWithThirdRelation : project,
+    ),
     thirdProject,
   ],
 })
