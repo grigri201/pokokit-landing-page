@@ -102,7 +102,7 @@ describe('data boundary enforcement', () => {
     }
 
     expect(packageJson.scripts.build).toBe(
-      'tsc -b && vitest run && vite build && vitest run vitest/dist-boundary.test.ts',
+      'tsc -b && vitest run && vite build && CHECK_DIST=1 vitest run vitest/dist-boundary.test.ts',
     )
 
     const violations = Object.entries(packageJson.scripts).flatMap(

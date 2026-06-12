@@ -1,12 +1,14 @@
 # 静态根页面部署和发布验证
 
-Landing Page 是只发布根路径的 Vite 静态页面。部署时只发布 `dist/`，不需要相邻的 `pokopia-color-pattern`、`pokopia-scene-editor` 仓库、它们的构建产物、图片资产或本地保存数据。
+Landing Page 是只发布根路径的 Vite 静态页面。构建时会把首页正文预渲染进 `dist/index.html`，浏览器端只加载少量增强脚本处理主题、语言切换、根路径归一化和作者弹窗，不再通过 React SPA 入口在客户端生成首屏内容。
+
+部署时只发布 `dist/`，不需要相邻的 `pokopia-color-pattern`、`pokopia-scene-editor` 仓库、它们的构建产物、图片资产或本地保存数据。
 
 ## 路径边界
 
 公开有效路径只有 `/`。
 
-应用不维护 `/projects/*`、hash 子路由或独立 not-found 页面。开发服务器或目标 host 如果把其他路径返回给应用 shell，客户端会把当前 URL 归一化回 `/` 并渲染首页。
+应用不维护 `/projects/*`、hash 子路由或独立 not-found 页面。开发服务器或目标 host 如果把其他路径返回给根页面，增强脚本会把当前 URL 归一化回 `/`，但首页正文本身已经在静态 HTML 中。
 
 静态资源请求仍应按文件系统命中。缺失的 `/assets/*`、`/pokemon-portraits/*`、带扩展名的文件路径或其他站点资产不应被当成应用页面静默返回。
 
@@ -25,7 +27,7 @@ pnpm build
 pnpm smoke
 ```
 
-`pnpm build` 会执行 typecheck、Vitest、Vite production build 和构建产物边界检查。它不执行外部 link checking，不要求外部 URL 可访问，也不读取相邻 Pokopia 项目仓库。
+`pnpm build` 会执行 typecheck、Vitest、Vite production build 和构建产物边界检查。边界检查会确认 `dist/index.html` 不再是空 `#root` SPA shell，并且包含首页项目卡片正文。它不执行外部 link checking，不要求外部 URL 可访问，也不读取相邻 Pokopia 项目仓库。
 
 `pnpm smoke` 使用本地 Vite server 做应用级 smoke，验证：
 

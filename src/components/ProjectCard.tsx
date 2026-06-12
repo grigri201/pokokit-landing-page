@@ -68,10 +68,18 @@ function getProjectCardBackground(projectId: string): CardBackground | undefined
   }
 
   if (projectId === 'pokopia-decor-dex') {
-    return decorDexBackgrounds[Math.floor(Math.random() * decorDexBackgrounds.length)]
+    return decorDexBackgrounds[deterministicIndex(projectId, decorDexBackgrounds.length)]
   }
 
   return undefined
+}
+
+function deterministicIndex(value: string, modulo: number): number {
+  const hash = Array.from(value).reduce((currentHash, character) => {
+    return (currentHash * 31 + character.charCodeAt(0)) >>> 0
+  }, 0)
+
+  return hash % modulo
 }
 
 const sceneItemCellsByVariant = {
@@ -113,6 +121,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const card = (
     <article
       className="project-card"
+      data-project-id={project.id}
       data-project-type={project.type}
       data-card-background={background ? 'true' : undefined}
       data-card-background-kind={background?.kind}
@@ -140,7 +149,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
         {showStatusBadge ? <StatusBadge status={project.status} compact /> : null}
       </div>
 
-      <p className="project-card__tagline">{project.tagline}</p>
+      <p className="project-card__tagline" data-project-tagline>
+        {project.tagline}
+      </p>
 
       <div className="project-card__footer">
         {canOpenCard ? (
@@ -159,6 +170,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <a
       className="project-card-link"
+      data-project-card-link={project.id}
       href={cardHref}
       rel={external ? 'noopener noreferrer' : undefined}
       target={external ? '_blank' : undefined}
@@ -215,6 +227,7 @@ function ProjectCardCta({
   return (
     <span
       className="entrypoint-button entrypoint-button--primary project-card__cta"
+      data-primary-entrypoint-id={entrypoint.id}
       aria-hidden="true"
     >
       <span>{entrypoint.label}</span>

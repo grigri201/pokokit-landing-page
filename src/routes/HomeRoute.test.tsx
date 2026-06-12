@@ -11,7 +11,9 @@ describe('HomeRoute', () => {
   it('renders the Compact Trust Index without merged-runtime claims', () => {
     render(<HomeRoute />)
 
-    expect(screen.getByRole('heading', { name: 'pokokit' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: /^pokokit$/ }),
+    ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '切换到深色模式' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '切换到英文' })).toHaveTextContent('EN')
     const authorButton = screen.getByRole('button', {

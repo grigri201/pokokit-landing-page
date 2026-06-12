@@ -1,13 +1,43 @@
 import { access, readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { cwd } from 'node:process'
+import { cwd, env } from 'node:process'
 import { describe, expect, it } from 'vitest'
 
 const distRoot = path.join(cwd(), 'dist')
 const scannedExtensions = new Set(['.html', '.js', '.css', '.svg', '.json'])
+const distBoundaryEnabled = env.CHECK_DIST === '1'
 
 describe('built runtime boundary', () => {
+  it('ships prerendered home content instead of an empty SPA shell', async () => {
+    if (!distBoundaryEnabled) {
+      return
+    }
+
+    if (!(await directoryExists(distRoot))) {
+      return
+    }
+
+    const html = await readFile(path.join(distRoot, 'index.html'), 'utf8')
+    const document = new DOMParser().parseFromString(html, 'text/html')
+    const root = document.querySelector('#root')
+
+    expect(document.documentElement.lang).toBe('zh-CN')
+    expect(document.documentElement.dataset.theme).toBe('light')
+    expect(root?.children.length).toBeGreaterThan(0)
+    expect(root?.textContent).toContain('Pokopia Scene Editor')
+    expect(root?.textContent).toContain('Pokokit Gallery')
+    expect(root?.textContent).toContain('Pokemon 色彩、偏好词和装饰搭配')
+    expect(html).not.toContain('<div id="root"></div>')
+    expect(html).not.toContain('/src/main.tsx')
+    expect(html).not.toContain('react-dom/client')
+    expect(html).not.toContain('createRoot')
+  })
+
   it('does not ship adjacent project internals or active local project storage readers', async () => {
+    if (!distBoundaryEnabled) {
+      return
+    }
+
     if (!(await directoryExists(distRoot))) {
       return
     }

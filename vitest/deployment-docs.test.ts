@@ -41,14 +41,17 @@ describe('deployment fallback documentation', () => {
     expect(doc).not.toMatch(/rewrite 到 `index\.html`/)
   })
 
-  it('keeps App root-only without React Router project routes', async () => {
-    const appSource = await readFile(path.join(repoRoot, 'src', 'App.tsx'), 'utf8')
+  it('keeps static enhancements root-only without React Router project routes', async () => {
+    const enhancementSource = await readFile(
+      path.join(repoRoot, 'src', 'static-enhancements.ts'),
+      'utf8',
+    )
 
-    expect(appSource).toMatch(/redirectUnsupportedPathToRoot/)
-    expect(appSource).not.toMatch(/ProjectDetailRoute/)
-    expect(appSource).not.toMatch(/BrowserRouter/)
-    expect(appSource).not.toMatch(/HashRouter/)
-    expect(appSource).not.toMatch(/Route\s+path/)
+    expect(enhancementSource).toMatch(/redirectUnsupportedPathToRoot/)
+    expect(enhancementSource).not.toMatch(/ProjectDetailRoute/)
+    expect(enhancementSource).not.toMatch(/BrowserRouter/)
+    expect(enhancementSource).not.toMatch(/HashRouter/)
+    expect(enhancementSource).not.toMatch(/Route\s+path/)
   })
 
   it('keeps build and smoke scripts available for release validation', async () => {

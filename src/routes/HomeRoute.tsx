@@ -2,91 +2,20 @@ import { useEffect, useRef, useState } from 'react'
 import { EmptyState } from '../components/EmptyState'
 import { ProjectCard } from '../components/ProjectCard'
 import { projects } from '../data/projects'
+import {
+  homeCopy,
+  localizeHomeProject,
+  type LanguageMode,
+  type ThemeMode,
+} from '../domain/home-copy'
 import type { ProjectCard as ProjectCardData } from '../domain/project-schema'
 
 type HomeRouteProps = {
   projectList?: ProjectCardData[]
   languageMode?: LanguageMode
-  themeMode?: 'light' | 'dark'
+  themeMode?: ThemeMode
   onLanguageToggle?: () => void
   onThemeToggle?: () => void
-}
-
-type LanguageMode = 'zh' | 'en'
-
-type HomeCopy = {
-  authorLabel: string
-  authorName: string
-  emptyDescription: string
-  emptyTitle: string
-  authorButtonLabel: string
-  authorCloseLabel: string
-  githubLabel: string
-  languageLabel: string
-  languageShortLabel: string
-  projectListLabel: string
-  themeLabel: string
-}
-
-type ProjectCopy = {
-  entrypointLabels?: Record<string, string>
-  tagline?: string
-}
-
-const homeCopy: Record<LanguageMode, (themeMode: 'light' | 'dark') => HomeCopy> = {
-  zh: (themeMode) => ({
-    authorLabel: '@',
-    authorName: '赛博许愿机',
-    authorButtonLabel: '打开 @赛博许愿机 留言',
-    authorCloseLabel: '关闭 @赛博许愿机 对话',
-    emptyDescription: '当前 manifest 中没有可展示的 Pokopia 工具。',
-    emptyTitle: '暂无项目',
-    githubLabel: '打开 GitHub: grigri201',
-    languageLabel: '切换到英文',
-    languageShortLabel: 'EN',
-    projectListLabel: 'Projects',
-    themeLabel: themeMode === 'light' ? '切换到深色模式' : '切换到浅色模式',
-  }),
-  en: (themeMode) => ({
-    authorLabel: '@',
-    authorName: 'Cyber Wishing Machine',
-    authorButtonLabel: 'Open @赛博许愿机 message',
-    authorCloseLabel: 'Close @赛博许愿机 dialog',
-    emptyDescription: 'The current manifest has no Pokopia tools to show.',
-    emptyTitle: 'No projects yet',
-    githubLabel: 'Open GitHub: grigri201',
-    languageLabel: 'Switch to Chinese',
-    languageShortLabel: '中',
-    projectListLabel: 'Projects',
-    themeLabel: themeMode === 'light' ? 'Switch to dark mode' : 'Switch to light mode',
-  }),
-}
-
-const homeProjectCopy: Record<LanguageMode, Record<string, ProjectCopy>> = {
-  zh: {},
-  en: {
-    'pokopia-decor-dex': {
-      tagline: 'A Pokopia dex for Pokemon colors, preference terms, and decor pairings.',
-      entrypointLabels: {
-        'decor-dex-public-tool': 'Open Decor Dex Tool',
-      },
-    },
-    'pokopia-scene-editor': {
-      tagline: 'Record and share your Pokopia scenes on a 7*7 workspace.',
-      entrypointLabels: {
-        'scene-editor-public-tool': 'Open Scene Editor Tool',
-        'scene-editor-local-repo': 'View Local Repository',
-        'scene-editor-planning-docs': 'View Planning Docs',
-      },
-    },
-    'pokokit-gallery': {
-      tagline: 'Browse public Pokopia scenes and recover the scenes you saved to Gallery.',
-      entrypointLabels: {
-        'gallery-public-tool': 'Open Gallery',
-        'gallery-local-repo': 'View Local Repository',
-      },
-    },
-  },
 }
 
 const authorProfileTitle = '@赛博许愿机'
@@ -101,26 +30,6 @@ const focusableSelector = [
   'textarea:not([disabled])',
   '[tabindex]:not([tabindex="-1"])',
 ].join(',')
-
-function localizeHomeProject(
-  project: ProjectCardData,
-  languageMode: LanguageMode,
-): ProjectCardData {
-  const copy = homeProjectCopy[languageMode][project.id]
-
-  if (!copy) {
-    return project
-  }
-
-  return {
-    ...project,
-    tagline: copy.tagline ?? project.tagline,
-    entrypoints: project.entrypoints.map((entrypoint) => ({
-      ...entrypoint,
-      label: copy.entrypointLabels?.[entrypoint.id] ?? entrypoint.label,
-    })),
-  }
-}
 
 export function HomeRoute({
   projectList = projects,
@@ -144,6 +53,9 @@ export function HomeRoute({
     if (!authorModalOpen) {
       return
     }
+
+    const appContentElement = appContentRef.current
+    const authorButtonElement = authorButtonRef.current
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
@@ -181,20 +93,20 @@ export function HomeRoute({
       }
     }
 
-    appContentRef.current?.setAttribute('inert', '')
+    appContentElement?.setAttribute('inert', '')
     window.addEventListener('keydown', handleKeyDown)
     authorCloseButtonRef.current?.focus()
 
     return () => {
-      appContentRef.current?.removeAttribute('inert')
+      appContentElement?.removeAttribute('inert')
       window.removeEventListener('keydown', handleKeyDown)
 
       if (
         shouldRestoreAuthorFocusRef.current &&
-        authorButtonRef.current &&
-        document.contains(authorButtonRef.current)
+        authorButtonElement &&
+        document.contains(authorButtonElement)
       ) {
-        authorButtonRef.current.focus()
+        authorButtonElement.focus()
       }
     }
   }, [authorModalOpen])
@@ -216,6 +128,7 @@ export function HomeRoute({
     <>
       <div
         className="app-content"
+        data-app-content
         ref={appContentRef}
         aria-hidden={authorModalOpen ? 'true' : undefined}
       >
@@ -225,6 +138,7 @@ export function HomeRoute({
             <div className="top-banner__actions">
               <button
                 className="theme-toggle"
+                data-theme-toggle
                 type="button"
                 aria-label={copy.themeLabel}
                 title={copy.themeLabel}
@@ -238,6 +152,7 @@ export function HomeRoute({
               </button>
               <button
                 className="language-toggle"
+                data-language-toggle
                 type="button"
                 aria-label={copy.languageLabel}
                 title={copy.languageLabel}
@@ -247,6 +162,7 @@ export function HomeRoute({
               </button>
               <button
                 className="author-link"
+                data-author-open
                 type="button"
                 aria-expanded={authorModalOpen}
                 aria-haspopup="dialog"
@@ -259,6 +175,7 @@ export function HomeRoute({
               </button>
               <a
                 className="github-link"
+                data-github-link
                 href="https://github.com/grigri201"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -277,7 +194,11 @@ export function HomeRoute({
           <div className="home-content">
             <section className="project-section">
               {visibleProjects.length > 0 ? (
-                <ul className="project-grid" aria-label={copy.projectListLabel}>
+                <ul
+                  className="project-grid"
+                  data-project-list
+                  aria-label={copy.projectListLabel}
+                >
                   {visibleProjects.map((project) => (
                     <li key={project.id}>
                       <ProjectCard project={project} />
@@ -296,7 +217,7 @@ export function HomeRoute({
 
         <footer className="site-footer" aria-label={copy.authorLabel}>
           <span>{copy.authorLabel}</span>
-          <strong>{copy.authorName}</strong>
+          <strong data-author-name>{copy.authorName}</strong>
         </footer>
       </div>
 

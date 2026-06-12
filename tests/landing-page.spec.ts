@@ -15,7 +15,9 @@ test('renders the manifest-backed landing baseline', async ({ page }) => {
   await setLightTheme(page)
   await page.goto('/')
 
-  await expect(page.getByRole('heading', { name: 'pokokit' })).toBeVisible()
+  await expect(
+    page.getByRole('heading', { name: 'pokokit', exact: true }),
+  ).toBeVisible()
   await expect(page.getByRole('button', { name: '切换到深色模式' })).toBeVisible()
   await expect(page.getByRole('button', { name: '切换到英文' })).toHaveText('EN')
   await expect(page.getByRole('button', { name: '打开 @赛博许愿机 留言' })).toHaveAttribute(
@@ -124,7 +126,9 @@ test('redirects unsupported paths back to root', async ({ page }) => {
   ]) {
     await page.goto(unsupportedPath)
     await expect(page).toHaveURL(/\/$/)
-    await expect(page.getByRole('heading', { name: 'pokokit' })).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: 'pokokit', exact: true }),
+    ).toBeVisible()
     await expect(page.getByText('Pokopia Decor Dex')).toBeVisible()
     await expect(page.getByRole('heading', { name: '找不到项目' })).toHaveCount(0)
   }
@@ -243,7 +247,9 @@ test('legacy filter query keeps the root page readable', async ({
 })
 
 async function expectHomeCoreContent(page: Page) {
-  await expect(page.getByRole('heading', { name: 'pokokit' })).toBeVisible()
+  await expect(
+    page.getByRole('heading', { name: 'pokokit', exact: true }),
+  ).toBeVisible()
   await expect(page.getByRole('button', { name: '切换到英文' })).toBeVisible()
   await expect(page.getByRole('button', { name: '打开 @赛博许愿机 留言' })).toBeVisible()
   await expect(page.getByRole('group', { name: 'Project filters' })).toHaveCount(0)
